@@ -281,7 +281,7 @@ const Toolbar = L.Class.extend({
       disableOtherButtons: true,
       position: this.options.position,
       tool: 'edit',
-      actions: ['cancel'],
+      actions: ['layer','layergroup','cancel'],
     };
 
     const cutButton = {
