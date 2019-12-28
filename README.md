@@ -1,24 +1,56 @@
-# Leaflet Geometry Management
-
-![](https://travis-ci.com/codeofsumit/leaflet.pm.svg?branch=develop)
-
-A Leaflet Plugin For Creating And Editing Geometry Layers in Leaflet 1.x.\
-Draw, Edit, Drag, Cut and Snap layers like Markers, Polylines,
-Polygons, Circles, Rectangles, LayerGroups, GeoJSON, MultiPolygons, MultiLineStrings and more are coming.
+<p align="center">
+  <a href="https://leafletpm.now.sh">
+    <img width="130" alt="Geoman Logo" src="https://file-jxzyjgqwut.now.sh/" />
+  </a>
+</p>
+<h1 align="center">
+  Leaflet.PM
+</h1>
+<p align="center">
+  <strong>Leaflet Plugin For Creating And Editing Geometry Layers</strong><br>
+  Draw, Edit, Drag, Cut and Snap Layers<br>
+  Supports Markers, Polylines, Polygons, Circles, Rectangles, LayerGroups, GeoJSON and MultiPolygons
+</p>
+<p align="center">
+  <a href="https://badge.fury.io/js/leaflet.pm">
+    <img src="https://badge.fury.io/js/leaflet.pm.svg" alt="npm version" />
+  </a>
+  <a href="#">
+    <img src="https://travis-ci.com/codeofsumit/leaflet.pm.svg?branch=develop" alt="" />
+  </a>
+  <a href="https://github.com/codeofsumit/leaflet.pm">
+    <img src="http://githubbadges.com/star.svg?user=codeofsumit&repo=leaflet.pm&style=default" alt="star this repo" />
+  </a>
+  <a href="https://www.npmjs.com/package/leaflet.pm">
+    <img src="https://img.shields.io/npm/dt/leaflet.pm.svg" alt="NPM Downloads" />
+  </a>
+</p>
 
 ## [Demo (click here)](https://leafletpm.now.sh)
 
-![Demo](https://file-hmgrhlmwxy.now.sh/leafletPM.gif)
+![Demo](https://file-gmeileqfmg.now.sh/)
 
-Need advanced features like GeoJSON Export, storing meta data and more?\
-Check out **[Geoman](https://geoman.io)**.
+Are you using leaflet.pm for commercial projects?\
+Check out **[Geoman](https://geoman.io/#pricing)** and consider subscribing to the **Leaflet.PM Supporter Plan** to support development of advanced leaflet.pm features. You will also get prioritized support and consultation.
 
-### Getting Started
+## Documentation
+
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Drawing Mode](#drawing-mode)
+- [Editing Mode](#edit-mode)
+- [Drag Mode](#drag-mode)
+- [Removal Mode](#removal-mode)
+- [Cutting Mode](#cutting-mode)
+- [Customization](#customize)
+- [Need a feature?](#feature-request) | [Existing Feature Requests](https://github.com/codeofsumit/leaflet.pm/issues?q=is%3Aissue+is%3Aclosed+label%3A%22feature+request%22+sort%3Areactions-%2B1-desc)
+
+### Installation
 
 #### Install via npm
 
 ```
-npm install leaflet.pm --save
+npm i leaflet.pm
 ```
 
 #### Install Manually
@@ -32,11 +64,10 @@ and include them in your project.
 
 CSS
 
+<!-- prettier-ignore -->
 ```html
-<link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css"
-/>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css" />
 ```
 
 JS
@@ -52,14 +83,7 @@ import 'leaflet.pm';
 import 'leaflet.pm/dist/leaflet.pm.css';
 ```
 
-#### Include as CommonJS Module
-
-```js
-require('leaflet.pm');
-require('leaflet.pm/dist/leaflet.pm.css');
-```
-
-### Documentation
+### Getting Started
 
 #### Init Leaflet.PM
 
@@ -71,31 +95,34 @@ their options when creating them. Example:
 L.marker([51.50915, -0.096112], { pmIgnore: true }).addTo(map);
 ```
 
-##### Leaflet.PM Toolbar
+#### Leaflet.PM Toolbar
 
-This plugin comes with an optional toolbar to give you buttons to use the
-various features.
+<img align="left" height="200" src="https://file-ffrjxxowri.now.sh/" alt="Leaflet.PM Toolbar">
+
+You can add a toolbar to the map to use leaflet.pm features via a user interface.
 
 ```js
-// define toolbar options
-var options = {
-    position: 'topleft', // toolbar position, options are 'topleft', 'topright', 'bottomleft', 'bottomright'
-    useFontAwesome: false, // use fontawesome instead of geomanIcons (you need to include fontawesome yourself)
-    drawMarker: true, // adds button to draw markers
-    drawPolyline: true, // adds button to draw a polyline
-    drawRectangle: true, // adds button to draw a rectangle
-    drawPolygon: true, // adds button to draw a polygon
-    drawCircle: true, // adds button to draw a cricle
-    cutPolygon: true, // adds button to cut a hole in a polygon
-    editMode: true, // adds button to toggle edit mode for all layers
-    removalMode: true, // adds a button to remove layers
-};
-
-// add leaflet.pm controls to the map
-map.pm.addControls(options);
+// add leaflet.pm controls with some options to the map
+map.pm.addControls({
+  position: 'topleft',
+  drawCircle: false,
+});
 ```
 
-If no options are passed, all buttons will be shown.
+See the available options in the table below.
+
+| Option        | Default     | Description                                                                                      |
+| :------------ | :---------- | :----------------------------------------------------------------------------------------------- |
+| position      | `'topleft'` | toolbar position, possible values are `'topleft'`, `'topright'`, `'bottomleft'`, `'bottomright'` |
+| drawMarker    | `true`      | adds button to draw markers                                                                      |
+| drawPolyline  | `true`      | adds button to draw rectangle                                                                    |
+| drawRectangle | `true`      | adds button to draw rectangle                                                                    |
+| drawPolygon   | `true`      | adds button to draw polygon                                                                      |
+| drawCircle    | `true`      | adds button to draw cricle                                                                       |
+| editMode      | `true`      | adds button to toggle edit mode for all layers                                                   |
+| dragMode      | `true`      | adds button to toggle drag mode for all layers                                                   |
+| cutPolygon    | `true`      | adds button to cut a hole in a polygon                                                           |
+| removalMode   | `true`      | adds a button to remove layers                                                                   |
 
 If you are wondering how e.g. the `drawPolygon` button will enable drawing mode
 with specific options, here it is: Simply enable drawing mode programatically,
@@ -110,132 +137,219 @@ map.pm.enableDraw('Marker', { snappable: false });
 map.pm.disableDraw('Marker');
 
 // let polygons finish their shape on double click
-map.pm.enableDraw('Poly', { finishOn: 'dblclick' });
-map.pm.disableDraw('Poly');
+map.pm.enableDraw('Polygon', { finishOn: 'dblclick' });
+map.pm.disableDraw('Polygon');
 ```
 
 All available options are specified in the Drawing Mode Section below.
 
-##### Drawing Mode
+### Drawing Mode
 
 Use Drawing Mode on a map like this
 
 ```js
-// optional options for line style during draw. These are the defaults
-var options = {
-    // snapping
-    snappable: true,
-    snapDistance: 20,
-
-    // show tooltips
-    tooltips: true,
-
-    // allow snapping to the middle of segments
-    snapMiddle: false,
-
-    // self intersection
-    allowSelfIntersection: true,
-
-    // the lines between coordinates/markers
-    templineStyle: {
-        color: 'red',
-    },
-
-    // the line from the last marker to the mouse cursor
-    hintlineStyle: {
-        color: 'red',
-        dashArray: [5, 5],
-    },
-
-    // show a marker at the cursor
-    cursorMarker: false,
-
-    // specify type of layer event to finish the drawn shape
-    // example events: 'mouseout', 'dblclick', 'contextmenu'
-    // List: http://leafletjs.com/reference-1.2.0.html#interactive-layer-click
-    finishOn: null,
-
-    // custom marker style (only for Marker draw)
-    markerStyle: {
-        opacity: 0.5,
-        draggable: true,
-    },
-};
-
-// enable drawing mode for shape - e.g. Poly, Line, etc
-map.pm.enableDraw('Poly', options);
-map.pm.enableDraw('Rectangle', options);
-map.pm.enableDraw('Line', options);
-map.pm.enableDraw('Marker', options);
-map.pm.enableDraw('Circle', options);
-
-// get array of all available shapes
-map.pm.Draw.getShapes();
-
-// listen to when drawing mode gets enabled
-map.on('pm:drawstart', function(e) {
-    e.shape; // the name of the shape being drawn (i.e. 'Circle')
-    e.workingLayer; // the leaflet layer displayed while drawing
+// enable polygon drawing mode
+map.pm.enableDraw('Polygon', {
+  snappable: true,
+  snapDistance: 20,
 });
 
 // disable drawing mode
-map.pm.disableDraw('Poly');
+map.pm.disableDraw('Polygon');
+```
 
-// listen to when drawing mode gets disabled
-map.on('pm:drawend', function(e) {
-    e.shape; // the name of the shape being drawn (i.e. 'Circle')
-});
+Currently available shapes are `Marker`, `Circle`, `Line`, `Rectangle`, `Polygon` and `Cut`.
+You can get an array of all available shapes with:
 
-// listen to when a new layer is created
-map.on('pm:create', function(e) {
-    e.shape; // the name of the shape being drawn (i.e. 'Circle')
-    e.layer; // the leaflet layer created
-});
+```js
+map.pm.Draw.getShapes();
+```
 
-// listen to vertexes being added to the workingLayer (works only on polylines & polygons)
-map.on('pm:drawstart', function(e) {
-    var layer = e.workingLayer;
-    layer.on('pm:vertexadded', function(e) {
-        // e includes the new vertex, it's marker
-        // the index in the coordinates array
-        // the working layer and shape
-    });
+See the available options in the table below.
 
-    // also fired on the markers of the polygon
-    layer.on('pm:snapdrag', function(e) {
-        // e includes marker, snap coordinates
-        // segment, the working layer
-        // and the distance
-    });
+| Option                | Default                               | Description                                                                                                                                           |
+| :-------------------- | :------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| snappable             | `true`                                | enable snapping to other layers vertices for precision drawing. Can be disabled by holding the `ALT` key.                                             |
+| snapDistance          | `20`                                  | the distance to another vertex when a snap should happen                                                                                              |
+| snapMiddle            | `false`                               | allow snapping to the middle of a layers segments (between two vertexes)                                                                              |
+| tooltips              | `true`                                | show helpful tooltips for your user                                                                                                                   |
+| allowSelfIntersection | `true`                                | allow self intersections                                                                                                                              |
+| templineStyle         | `{ color: 'red' },`                   | [leaflet path options](https://leafletjs.com/reference-1.4.0.html#path) for the lines between drawn vertices/markers.                                 |
+| hintlineStyle         | `{ color: 'red', dashArray: [5, 5] }` | [leaflet path options](https://leafletjs.com/reference-1.4.0.html#path) for the helper line between last drawn vertex and the cursor.                 |
+| cursorMarker          | `true`                                | show a marker at the cursor                                                                                                                           |
+| finishOn              | `null`                                | leaflet layer event to finish the drawn shape, like `'dblclick'`. [Here's a list](http://leafletjs.com/reference-1.2.0.html#interactive-layer-click). |
+| pathOptions           | `pmLock: false`                       | [leaflet path options](https://leafletjs.com/reference-1.4.0.html#path) (only for drawing path layers). `pmLock:true` lock the layer.                |
+| markerStyle           | `{ draggable: true, pmLock: false}`   | [leaflet marker options](https://leafletjs.com/reference-1.4.0.html#marker-icon) (only for drawing markers). `pmLock:true` lock the marker.          |
 
-    // check self intersection
-    layer.pm.hasSelfIntersection();
-});
+You can listen to map events to hook into the drawing procedure like this:
 
-// listen to the center of a circle being added
-map.on('pm:drawstart', function(e) {
-    var circle = e.workingLayer;
-
-    // this fires only for circles
-    circle.on('pm:centerplaced', function(e) {
-        console.log(e);
-    });
-});
-
-// listen to when the center of a circle is moved
-map.on('pm:create', function(e) {
-    var circle = e.layer;
-
-    // this fires only for circles
-    circle.on('pm:centerplaced', function(e) {
-        console.log(e);
-    });
+```js
+map.on('pm:drawstart', e => {
+  console.log(e);
 });
 ```
 
-##### Creating Holes or Cutting a Polygon
+Here's a list of map events you can listen to:
 
-![cut polygon](https://file-klmbwnzaor.now.sh/cutting.gif)
+| Event        | Params | Description                                                                            |
+| :----------- | :----- | :------------------------------------------------------------------------------------- |
+| pm:drawstart | `e`    | Called when drawing mode is enabled. Payload includes the shape type and working layer |
+| pm:drawend   | `e`    | Called when drawing mode is disabled. Payload includes the shape type.                 |
+| pm:create    | `e`    | Called when a shape is drawn/finished. Payload includes shape type and the drawn layer |
+
+There are also several events for layers during draw. Register an event like this:
+
+```js
+// listen to vertexes being added to currently drawn layer (called workingLayer)
+map.on('pm:drawstart', ({ workingLayer }) => {
+  workingLayer.on('pm:vertexadded', e => {
+    console.log(e);
+  });
+});
+```
+
+Here's a list of layer events you can listen to:
+
+| Event           | Params | Description                                                                                                          |
+| :-------------- | :----- | :------------------------------------------------------------------------------------------------------------------- |
+| pm:vertexadded  | `e`    | Called when a new vertex is added. Payload includes the new vertex, it's marker, index, working layer and shape type |
+| pm:snapdrag     | `e`    | Fired during a marker move/drag. Payload includes info about involved layers and snapping calculation.               |
+| pm:snap         | `e`    | Fired when a vertex is snapped. Payload is the same as in `snapdrag`                                                 |
+| pm:unsnap       | `e`    | Fired when a vertex is unsnapped. Payload is the same as in `snapdrag`                                               |
+| pm:centerplaced | `e`    | Called when the center of a circle is placed/moved.                                                                  |
+
+For making the snapping to other layers selective, you can add the "snapIgnore" option to your layers to disable the snapping to them during drawing.
+```js
+L.geoJSON(data,{
+  snapIgnore : true
+})
+//This layer will be ignored by the snapping engine during drawing
+```
+
+
+### Edit Mode
+
+Let's you edit vertices of layers. Use it like this:
+
+```js
+// enable edit mode
+layer.pm.enable({
+  allowSelfIntersection: false,
+});
+```
+
+See the available options in the table below.
+
+| Option                | Default | Description                                                                                               |
+| :-------------------- | :------ | :-------------------------------------------------------------------------------------------------------- |
+| snappable             | `true`  | Enable snapping to other layers vertices for precision drawing. Can be disabled by holding the `ALT` key. |
+| snapDistance          | `20`    | The distance to another vertex when a snap should happen.                                                 |
+| allowSelfIntersection | `true`  | Allow/Disallow self-intersections on polygons and polylines.                                              |
+| preventMarkerRemoval  | `false` | Disable the removal of markers/vertexes via right click.                                                  |
+
+The following methods are available for layers under `layer.pm`:
+
+| Method                | Returns   | Description                                                                                         |
+| :-------------------- | :-------- | :-------------------------------------------------------------------------------------------------- |
+| enable(`options`)     | -         | Enables edit mode. The passed options are preserved, even when the mode is enabled via the Toolbar. |
+| disable()             | -         | Disables edit mode.                                                                                 |
+| toggleEdit(`options`) | -         | Toggles edit mode. Passed options are preserved.                                                    |
+| enabled()             | `Boolean` | Returns `true` if edit mode is enabled. `false` when disabled.                                      |
+| hasSelfIntersection() | `Boolean` | Returns `true` is the layer has a self intersection.                                                |
+
+You can listen to events related to editing on events like this:
+
+```js
+// listen to when a layer is changed in edit mode
+layer.on('pm:edit', e => {
+  console.log(e);
+});
+```
+
+The following events are available on a layer instance:
+
+| Event              | Params | Description                                                                                          |
+| :----------------- | :----- | :--------------------------------------------------------------------------------------------------- |
+| pm:edit            | `e`    | Fired when a layer is edited.                                                                        |
+| pm:vertexadded     | `e`    | Fired when a vertex is added                                                                         |
+| pm:vertexremoved   | `e`    | Fired when a vertex is removed                                                                       |
+| pm:markerdragstart | `e`    | Fired when dragging of a marker which corresponds to a vertex starts                                 |
+| pm:markerdragend   | `e`    | Fired when dragging of a vertex-marker ends                                                          |
+| pm:snap            | `e`    | Fired when a vertex-marker is snapped to another vertex. Also fired on the marker itself.            |
+| pm:unsnap          | `e`    | Fired when a vertex-marker is unsnapped from a vertex. Also fired on the marker itself.              |
+| pm:intersect       | `e`    | When `allowSelfIntersection: false`, this event is fired as soon as a self-intersection is detected. |
+| pm:centerplaced    | `e`    | Fired when the center of a circle is moved                                                           |
+
+You can enable Edit Mode for all layers on a map like this:
+
+```js
+// enable global edit mode
+map.pm.toggleGlobalEditMode(options);
+```
+
+The following methods are available on `map.pm`:
+
+| Method                          | Returns   | Description                                                           |
+| :------------------------------ | :-------- | :-------------------------------------------------------------------- |
+| enableGlobalEditMode(`options`) | -         | Enables global edit mode.                                             |
+| disableGlobalEditMode()         | -         | Disables global edit mode.                                            |
+| toggleGlobalEditMode(`options`) | -         | Toggles global edit mode.                                             |
+| globalEditEnabled()             | `Boolean` | Returns `true` if global edit mode is enabled. `false` when disabled. |
+
+You can also listen to specific edit mode events on the map instance like this:
+
+```js
+map.on('pm:globaleditmodetoggled', e => {
+  console.log(e);
+});
+```
+
+### Drag Mode
+
+```js
+// toggle drag mode like this:
+map.pm.toggleGlobalDragMode();
+```
+
+The following methods are available on `map.pm`:
+
+| Method                  | Returns   | Description                                                           |
+| :---------------------- | :-------- | :-------------------------------------------------------------------- |
+| toggleGlobalDragMode()  | -         | Toggles global drag mode.                                             |
+| globalDragModeEnabled() | `Boolean` | Returns `true` if global drag mode is enabled. `false` when disabled. |
+
+The following events are available on a layer instance:
+
+| Event        | Params | Description                              |
+| :----------- | :----- | :--------------------------------------- |
+| pm:dragstart | `e`    | Fired when a layer starts being dragged. |
+| pm:drag      | `e`    | Fired when a layer is dragged.           |
+| pm:dragend   | `e`    | Fired when a layer stops being dragged.  |
+
+### Removal Mode
+
+```js
+// toggle drag mode like this:
+map.pm.toggleGlobalRemovalMode();
+```
+
+The following methods are available on `map.pm`:
+
+| Method                    | Returns   | Description                                                              |
+| :------------------------ | :-------- | :----------------------------------------------------------------------- |
+| toggleGlobalRemovalMode() | -         | Toggles global removal mode.                                             |
+| globalRemovalEnabled()    | `Boolean` | Returns `true` if global removal mode is enabled. `false` when disabled. |
+
+The following events are available on a map instance:
+
+| Event       | Params | Description                                              |
+| :---------- | :----- | :------------------------------------------------------- |
+| pm:remove   | `e`    | Fired when a layer is removed via Removal Mode           |
+| layerremove | `e`    | Standard Leaflet event. Fired when any layer is removed. |
+
+### Cutting Mode
+
+![cut polygon](https://file-xdeoyklwhw.now.sh/)
 
 Enable drawing for the shape "Cut" to draw a polygon that gets subtracted from
 all underlying polygons. This way you can create holes, cut polygons in half or
@@ -247,117 +361,63 @@ will provide you with the original layer and returns the resulting
 layer(s) that is/are added to the map as a Polygon or MultiPolygon.
 
 ```js
-// recommended options (used when enabled via toolbar)
-var options = { snappable: false, cursorMarker: false };
-
-// enable cutting
-map.pm.Draw.Cut.enable(options);
-
-// disable cutting
-map.pm.Draw.Cut.disable(options);
-
-// toggle cutting
-map.pm.Draw.Cut.toggle(options);
-
-// listen to when a specific layer gets cut
-layer.on('pm:cut', function(e) {});
-
-// listen to when any layer on the map gets cut
-map.on('pm:cut', function(e) {});
+// enable cutting mode
+map.pm.Draw.Cut.enable({
+  allowSelfIntersection: false,
+});
 ```
 
-##### Edit Mode
+Available options are the [same as in drawing mode](https://github.com/codeofsumit/leaflet.pm/tree/new-docs#drawing-mode).
 
-Use Edit Mode for a layer like this:
+You can use these methods on `map.pm.Draw.Cut` to handle Cutting mode:
+
+| Method            | Returns | Description          |
+| :---------------- | :------ | :------------------- |
+| enable(`options`) | -       | Enable Cutting Mode. |
+| disable()         | -       | Disable Cutting Mode |
+| toggle(`options`) | -       | Toggle Cutting Mode  |
+
+The following events are available on a layer instance:
+
+| Event  | Params | Description                    |
+| :----- | :----- | :----------------------------- |
+| pm:cut | `e`    | Fired when the layer being cut |
+
+The following events are available on a map instance:
+
+| Event  | Params | Description                       |
+| :----- | :----- | :-------------------------------- |
+| pm:cut | `e`    | Fired when any layer is being cut |
+
+### Customize
+
+##### Customize Language
+
+Change the language of user-facing copy in leaflet.pm
 
 ```js
-var polygonLayer = L.geoJson(data).addTo(map);
+map.pm.setLang('de');
+```
 
-// optional options
-var options = {
-    // makes the layer draggable
-    draggable: true,
+Currently available languages are `en`, `de`, `it`, `ru`, `ro`, `es`, `fr` and `nl`.
+To add translations to the plugin, you can add [a translation file](src/assets/translations) via Pull Request.
 
-    // makes the vertices snappable to other layers
-    // temporarily disable snapping during drag by pressing ALT
-    snappable: true,
+You can also provide your own custom translations.
 
-    // distance in pixels that needs to be undercut to trigger snapping
-    // default: 30
-    snapDistance: 30,
-
-    // self intersection allowed?
-    allowSelfIntersection: true,
-
-    // disable the removal of markers/vertexes via right click
-    preventMarkerRemoval: false,
-
-    // disable the possibility to edit vertexes
-    preventVertexEdit: false,
+```js
+const customTranslation = {
+  tooltips: {
+    placeMarker: 'Custom Marker Translation',
+  },
 };
 
-// enable edit mode
-polygonLayer.pm.enable(options);
-marker.pm.enable(options);
-
-// disable edit mode
-polygonLayer.pm.disable();
-
-// toggle edit mode
-polygonLayer.pm.toggleEdit(options);
-
-// check if edit mode is enabled
-polygonLayer.pm.enabled(); // returns true/false
-
-// listen to changes
-polygonLayer.on('pm:edit', function(e) {});
-polygonLayer.on('pm:dragstart', function(e) {});
-polygonLayer.on('pm:drag', function(e) {});
-polygonLayer.on('pm:dragend', function(e) {});
-
-// listen to when vertexes are being added or removed from the layer
-polygonLayer.on('pm:vertexadded', function(e) {});
-polygonLayer.on('pm:vertexremoved', function(e) {});
-
-// listen to when a marker of a polygon-vertex is being dragged
-polygonLayer.on('pm:markerdragstart', function(e) {
-    // the property e.ringIndex refers to the coordinate ring inside the polygon the marker belongs to
-    // if it's undefined, there are no rings
-    // e.index is the index of the marker inside the coordinate ring / array it belongs to
-});
-polygonLayer.on('pm:markerdragend', function(e) {});
-
-// listen to when snapping occurs
-// pm:snap and pm:unsnap are, in addition to the layer, also fired on the markers of the polygon
-// if you'd need it for some advanced behaviour
-polygonLayer.on('pm:snap', function(e) {});
-polygonLayer.on('pm:unsnap', function(e) {});
-
-// if allowSelfIntersection is false: listen to when a self-intersection is detected
-// e.intersection includes a geoJSON of the intersection
-polygonLayer.on('pm:intersect', function(e) {});
-
-// toggle global edit mode (edit mode for all layers on the map)
-map.pm.toggleGlobalEditMode(options);
-
-// listen to when global edit mode is toggled
-map.on('pm:globaleditmodetoggled', function(e) {});
-
-// check self intersection
-polygonLayer.pm.hasSelfIntersection(); // true/false
+map.pm.setLang('customName', customTranslation, 'en');
 ```
 
-##### Removal Mode
+The 3rd parameter is the fallback language in case you only want to override a few Strings.
+See the [english translation file](src/assets/translations/en.json) for all available strings.
 
-```js
-// toggle global removal mode
-map.pm.toggleGlobalRemovalMode();
-
-// listen to removal of layers that are NOT ignored and NOT helpers by leaflet.pm
-map.on('pm:remove', function(e) {});
-```
-
-### Customize Style
+##### Customize Style
 
 In order to change the style of the lines during draw, pass these options to the
 `enableDraw()` function.
@@ -365,20 +425,20 @@ In order to change the style of the lines during draw, pass these options to the
 ```js
 // optional options for line style during draw. These are the defaults
 var options = {
-    // the lines between coordinates/markers
-    templineStyle: {
-        color: 'red',
-    },
+  // the lines between coordinates/markers
+  templineStyle: {
+    color: 'red',
+  },
 
-    // the line from the last marker to the mouse cursor
-    hintlineStyle: {
-        color: 'red',
-        dashArray: [5, 5],
-    },
+  // the line from the last marker to the mouse cursor
+  hintlineStyle: {
+    color: 'red',
+    dashArray: [5, 5],
+  },
 };
 
 // enable drawing mode for shape - e.g. Poly, Line, Circle, etc
-map.pm.enableDraw('Poly', options);
+map.pm.enableDraw('Polygon', options);
 ```
 
 To customize the style of the drawn layer with leaflet options, you can either
@@ -387,26 +447,26 @@ pass the options to `enableDraw`:
 ```js
 // optional options for line style during draw. These are the defaults
 var options = {
-    templineStyle: {},
-    hintlineStyle: {},
-    pathOptions: {
-        // add leaflet options for polylines/polygons
-        color: 'orange',
-        fillColor: 'green',
-    },
+  templineStyle: {},
+  hintlineStyle: {},
+  pathOptions: {
+    // add leaflet options for polylines/polygons
+    color: 'orange',
+    fillColor: 'green',
+  },
 };
 
 // enable drawing mode for shape - e.g. Poly or Line
-map.pm.enableDraw('Poly', options);
+map.pm.enableDraw('Polygon', options);
 ```
 
 or set the options generally:
 
 ```js
 map.pm.setPathOptions({
-    color: 'orange',
-    fillColor: 'green',
-    fillOpacity: 0.4,
+  color: 'orange',
+  fillColor: 'green',
+  fillOpacity: 0.4,
 });
 ```
 
@@ -425,3 +485,5 @@ familiar code.
 I also took a hard look at the great
 [L.GeometryUtil](https://github.com/makinacorpus/Leaflet.GeometryUtil) for some
 of my helper functions.
+
+If you want to support the development of leaflet.pm, consider subscribing to the services of [Geoman](https://geoman.io).

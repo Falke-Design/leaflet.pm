@@ -1,151 +1,230 @@
 const DragMixin = {
-    _initDraggableLayer() {
-        // temporary coord variable for delta calculation
-        this._tempDragCoord = null;
+  enableLayerDrag() {
+    if(this._layers){ //Check if Layergroup
 
-        // add CSS class
-        const el = this._layer._path ? this._layer._path : this._layer._renderer._container;
+      this._layerGroup.on('mousedown', this._dragMixinOnMouseDownLayerGroup, this);
 
-        L.DomUtil.addClass(el, 'leaflet-pm-draggable');
+    }else {
+      if (this._layer instanceof L.Marker) {
+        this._layer.dragging.enable();
+        return;
+      }
 
-        this._originalMapDragState = this._layer._map.dragging._enabled;
+      // temporary coord variable for delta calculation
+      this._tempDragCoord = null;
 
-        // can we reliably save the map's draggable state?
-        // (if the mouse up event happens outside the container, then the map can become undraggable)
-        this._safeToCacheDragState = true;
+      // add CSS class
+      const el = this._layer._path
+          ? this._layer._path
+          : this._layer._renderer._container;
+      L.DomUtil.addClass(el, 'leaflet-pm-draggable');
 
-        this._layer.on('mousedown', this._dragMixinOnMouseDown, this);
-    },
-    _dragMixinOnMouseUp() {
-        const el = this._layer._path ? this._layer._path : this._layer._renderer._container;
+      this._originalMapDragState = this._layer._map.dragging._enabled;
 
-        // re-enable map drag
-        if (this._originalMapDragState) {
-            this._layer._map.dragging.enable();
-        }
+      // can we reliably save the map's draggable state?
+      // (if the mouse up event happens outside the container, then the map can become undraggable)
+      this._safeToCacheDragState = true;
 
-        // if mouseup event fired, it's safe to cache the map draggable state on the next mouse down
-        this._safeToCacheDragState = true;
 
-        // clear up mousemove event
-        this._layer._map.off('mousemove', this._dragMixinOnMouseMove, this);
+      // add mousedown event to trigger drag
+      this._layer.on('mousedown', this._dragMixinOnMouseDown, this);
+    }
+  },
+  disableLayerDrag() {
+    if(this._layers){ //Check if Layergroup
 
-        // clear up mouseup event
-        this._layer.off('mouseup', this._dragMixinOnMouseUp, this);
+      this._layerGroup.off('mousedown', this._dragMixinOnMouseDownLayerGroup, this);
 
-        // if no drag happened, don't do anything
-        if (!this._dragging) {
-            return false;
-        }
+    }else {
 
-        // show markers again
-        this._initMarkers();
+      if (this._layer instanceof L.Marker) {
+        this._layer.dragging.disable();
+        return;
+      }
 
-        // timeout to prevent click event after drag :-/
-        // TODO: do it better as soon as leaflet has a way to do it better :-)
-        window.setTimeout(() => {
-            // set state
-            this._dragging = false;
-            L.DomUtil.removeClass(el, 'leaflet-pm-dragging');
+      // remove CSS class
+      const el = this._layer._path
+          ? this._layer._path
+          : this._layer._renderer._container;
+      L.DomUtil.removeClass(el, 'leaflet-pm-draggable');
 
-            // fire pm:dragend event
-            this._layer.fire('pm:dragend');
+      // no longer save the drag state
+      this._safeToCacheDragState = false;
 
-            // fire edit
-            this._fireEdit();
-        }, 10);
+      // disable mousedown event
+      this._layer.off('mousedown', this._dragMixinOnMouseDown, this);
+    }
+  },
+  _dragMixinOnMouseUp() {
+    const el = this._layer._path
+      ? this._layer._path
+      : this._layer._renderer._container;
 
-        return true;
-    },
-    _dragMixinOnMouseMove(e) {
-        const el = this._layer._path ? this._layer._path : this._layer._renderer._container;
+    // re-enable map drag
+    if (this._originalMapDragState) {
+      this._layer._map.dragging.enable();
+    }
 
-        if (!this._dragging) {
-            // set state
-            this._dragging = true;
-            L.DomUtil.addClass(el, 'leaflet-pm-dragging');
+    // if mouseup event fired, it's safe to cache the map draggable state on the next mouse down
+    this._safeToCacheDragState = true;
 
-            // bring it to front to prevent drag interception
-            this._layer.bringToFront();
+    // clear up mousemove event
+    this._layer._map.off('mousemove', this._dragMixinOnMouseMove, this);
 
-            // disbale map drag
-            if (this._originalMapDragState) {
-                this._layer._map.dragging.disable();
-            }
+    // clear up mouseup event
+    this._layer.off('mouseup', this._dragMixinOnMouseUp, this);
 
-            // hide markers
-            this._markerGroup.clearLayers();
+    // if no drag happened, don't do anything
+    if (!this._dragging) {
+      return false;
+    }
 
-            // fire pm:dragstart event
-            this._layer.fire('pm:dragstart');
-        }
+    // timeout to prevent click event after drag :-/
+    // TODO: do it better as soon as leaflet has a way to do it better :-)
+    window.setTimeout(() => {
+      // set state
+      this._dragging = false;
+      L.DomUtil.removeClass(el, 'leaflet-pm-dragging');
 
-        this._onLayerDrag(e);
-    },
-    _dragMixinOnMouseDown(e) {
-        // cancel if mouse button is NOT the left button
-        if (e.originalEvent.button > 0) {
-            return;
-        }
-        // save current map dragging state
-        if (this._safeToCacheDragState) {
-            this._originalMapDragState = this._layer._map.dragging._enabled;
+      // fire pm:dragend event
+      this._layer.fire('pm:dragend');
 
-            // don't cache the state again until another mouse up is registered
-            this._safeToCacheDragState = false;
-        }
+      // fire edit
+      this._fireEdit();
+    }, 10);
 
+    return true;
+  },
+  _dragMixinOnMouseMove(e) {
+    const el = this._layer._path
+      ? this._layer._path
+      : this._layer._renderer._container;
+
+    if (!this._dragging) {
+      // set state
+      this._dragging = true;
+      L.DomUtil.addClass(el, 'leaflet-pm-dragging');
+
+      // bring it to front to prevent drag interception
+      this._layer.bringToFront();
+
+      // disbale map drag
+      if (this._originalMapDragState) {
+        this._layer._map.dragging.disable();
+      }
+
+      // fire pm:dragstart event
+      this._layer.fire('pm:dragstart');
+    }
+
+    this._onLayerDrag(e);
+  },
+  _dragMixinOnMouseDown(e) {
+    // cancel if mouse button is NOT the left button
+    if (e.originalEvent.button > 0) {
+      return;
+    }
+    // save current map dragging state
+    if (this._safeToCacheDragState) {
+      this._originalMapDragState = this._layer._map.dragging._enabled;
+
+      // don't cache the state again until another mouse up is registered
+      this._safeToCacheDragState = false;
+    }
+
+    // save for delta calculation
+    this._tempDragCoord = e.latlng;
+
+    this._layer.on('mouseup', this._dragMixinOnMouseUp, this);
+
+    // listen to mousemove on map (instead of polygon),
+    // otherwise fast mouse movements stop the drag
+    this._layer._map.on('mousemove', this._dragMixinOnMouseMove, this);
+  },
+  _dragMixinOnMouseDownLayerGroup(e) {
+
+    this._layers.forEach((layer)=>{
+      if(layer instanceof L.Marker){
         // save for delta calculation
-        this._tempDragCoord = e.latlng;
+        layer.pm._tempDragCoord = e.latlng;
+        layer.pm._map.on('mousemove', this._dragMixinOnMouseMoveLayerGroupMarker, layer.pm);
+      }else {
+        layer.pm._dragMixinOnMouseDown(e);
+      }
+    });
+    this._layerGroup.on('mouseup', this._dragMixinOnMouseUpLayerGroup, this);
 
-        this._layer.on('mouseup', this._dragMixinOnMouseUp, this);
+  },
+  _dragMixinOnMouseUpLayerGroup() {
+    // clear up mouseup event
+    this._layerGroup.off('mouseup', this._dragMixinOnMouseUpLayerGroup, this);
+    this._layers.forEach((layer)=>{
+      if(layer instanceof L.Marker){
+        layer.pm._map.off('mousemove', this._dragMixinOnMouseMoveLayerGroupMarker, layer.pm);
+      }else {
+        layer.pm._dragMixinOnMouseUp();
+      }
+    });
+    return true;
+  },
 
-        // listen to mousemove on map (instead of polygon),
-        // otherwise fast mouse movements stop the drag
-        this._layer._map.on('mousemove', this._dragMixinOnMouseMove, this);
-    },
-    dragging() {
-        return this._dragging;
-    },
+  _dragMixinOnMouseMoveLayerGroupMarker(e) {
+    this._onLayerDrag(e);
+  },
+  dragging() {
+    return this._dragging;
+  },
+  _onLayerDrag(e) {
+    // latLng of mouse event
+    const { latlng } = e;
 
-    _onLayerDrag(e) {
-        // latLng of mouse event
-        const { latlng } = e;
+    // delta coords (how far was dragged)
+    const deltaLatLng = {
+      lat: latlng.lat - this._tempDragCoord.lat,
+      lng: latlng.lng - this._tempDragCoord.lng,
+    };
 
-        // delta coords (how far was dragged)
-        const deltaLatLng = {
-            lat: latlng.lat - this._tempDragCoord.lat,
-            lng: latlng.lng - this._tempDragCoord.lng,
+    // move the coordinates by the delta
+    const moveCoords = coords =>
+      // alter the coordinates
+      coords.map(currentLatLng => {
+        if (Array.isArray(currentLatLng)) {
+          // do this recursively as coords might be nested
+          return moveCoords(currentLatLng);
+        }
+
+        // move the coord and return it
+        return {
+          lat: currentLatLng.lat + deltaLatLng.lat,
+          lng: currentLatLng.lng + deltaLatLng.lng,
         };
+      });
 
-        // move the coordinates by the delta
-        const moveCoords = coords =>
-            // alter the coordinates
-            coords.map((currentLatLng) => {
-                if (Array.isArray(currentLatLng)) {
-                    // do this recursively as coords might be nested
-                    return moveCoords(currentLatLng);
-                }
+    const moveCoord = coord => ({
+      lat: coord.lat + deltaLatLng.lat,
+      lng: coord.lng + deltaLatLng.lng,
+    });
 
-                // move the coord and return it
-                return {
-                    lat: currentLatLng.lat + deltaLatLng.lat,
-                    lng: currentLatLng.lng + deltaLatLng.lng,
-                };
-            });
+    if (this._layer instanceof L.CircleMarker || this._layer instanceof L.Marker) {
+      // create the new coordinates array
+      const newCoords = moveCoord(this._layer.getLatLng());
 
-        // create the new coordinates array
-        const newCoords = moveCoords(this._layer._latlngs);
+      // set new coordinates and redraw
+      this._layer.setLatLng(newCoords);
+    } else {
+      // create the new coordinates array
+      const newCoords = moveCoords(this._layer.getLatLngs());
 
-        // set new coordinates and redraw
-        this._layer.setLatLngs(newCoords).redraw();
+      // set new coordinates and redraw
+      this._layer.setLatLngs(newCoords);
+    }
 
-        // save current latlng for next delta calculation
-        this._tempDragCoord = latlng;
+    // save current latlng for next delta calculation
+    this._tempDragCoord = latlng;
 
-        // fire pm:dragstart event
-        this._layer.fire('pm:drag');
-    },
+    // fire pm:dragstart event
+    this._layer.fire('pm:drag');
+  },
 };
 
 export default DragMixin;
