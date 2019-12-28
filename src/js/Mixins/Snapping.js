@@ -59,11 +59,15 @@ const SnapMixin = {
       return false;
     }
 
-    // create a list of polygons that the marker could snap to
+    // create a list of layers that the marker could snap to
     // this isn't inside a movestart/dragstart callback because middlemarkers are initialized
     // after dragstart/movestart so it wouldn't fire for them
     if (this._snapList === undefined) {
-      this._createSnapList(e);
+      this._createSnapList();
+
+      // re-create the snaplist again when a layer is added during draw
+      this._map.off('layeradd', this._createSnapList, this);
+      this._map.on('layeradd', this._createSnapList, this);
     }
 
     // if there are no layers to snap to, stop here
@@ -209,16 +213,16 @@ const SnapMixin = {
     // temporary markers of polygon-edits
     map.eachLayer(layer => {
       if (
-        layer instanceof L.Polyline ||
-        layer instanceof L.Marker ||
-        layer instanceof L.CircleMarker &&
+        (layer instanceof L.Polyline ||
+          layer instanceof L.Marker ||
+          layer instanceof L.CircleMarker) &&
         layer.options.snapIgnore !== true
-
       ) {
         layers.push(layer);
 
         // this is for debugging
         const debugLine = L.polyline([], { color: 'red', pmIgnore: true });
+        debugLine._pmTempLayer = true;
         debugIndicatorLines.push(debugLine);
 
         // uncomment 👇 this line to show helper lines for debugging
@@ -234,7 +238,7 @@ const SnapMixin = {
       layer => layer._latlng || (layer._latlngs && layer._latlngs.length > 0)
     );
 
-    // finally remove everything that's leaflet.pm specific temporary stuff
+    // finally remove everything that's leaflet-geoman specific temporary stuff
     layers = layers.filter(layer => !layer._pmTempLayer);
 
     // save snaplist from layers and the other snap layers added from other classes/scripts

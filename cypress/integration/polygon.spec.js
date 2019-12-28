@@ -1,6 +1,50 @@
 describe('Draw & Edit Poly', () => {
   const mapSelector = '#map';
 
+  it('works without pmIgnore', () => {
+    cy.window().then(({ L }) => {
+      L.PM.initialize({ optIn: false });
+      cy.drawShape('MultiPolygon');
+    });
+
+    cy.toolbarButton('edit').click();
+
+    cy.hasVertexMarkers(8);
+  });
+
+  it('respects pmIgnore', () => {
+    cy.window().then(({ L }) => {
+      L.PM.initialize({ optIn: false });
+      cy.drawShape('MultiPolygon', true);
+    });
+
+    cy.toolbarButton('edit').click();
+
+    cy.hasVertexMarkers(0);
+  });
+
+  it('respects optIn', () => {
+    cy.window().then(({ L }) => {
+      L.PM.initialize({ optIn: true });
+      cy.drawShape('MultiPolygon');
+    });
+
+    cy.toolbarButton('edit').click();
+
+    cy.hasVertexMarkers(0);
+  });
+
+  it('respects pmIgnore with optIn', () => {
+    cy.window().then(({ L }) => {
+      L.PM.initialize({ optIn: true });
+      cy.drawShape('MultiPolygon', false);
+    });
+
+    cy.toolbarButton('edit').click();
+
+    cy.hasVertexMarkers(8);
+  });
+
   it('doesnt finish single point polys', () => {
     cy.toolbarButton('polygon').click();
 
@@ -13,6 +57,18 @@ describe('Draw & Edit Poly', () => {
     cy.hasVertexMarkers(0);
 
     cy.toolbarButton('edit').click();
+  });
+
+  it('handles polygon additions mid-drawing', () => {
+    // for manual testing
+    cy.toolbarButton('polygon').click();
+    cy.get(mapSelector)
+      .click(90, 250);
+
+    cy.wait(2000)
+    cy.drawShape('LineString', true);
+
+    // manual test if snapping works here
   });
 
   it('doesnt finish two point polys', () => {
@@ -128,7 +184,7 @@ describe('Draw & Edit Poly', () => {
   it('adds new vertex to end of array', () => {
     // when adding a vertex between the first and last current vertex,
     // the new coord should be added to the end, not the beginning of the coord array
-    // https://github.com/codeofsumit/leaflet.pm/issues/312
+    // https://github.com/geoman-io/leaflet-geoman/issues/312
 
     cy.toolbarButton('polygon')
       .click()
