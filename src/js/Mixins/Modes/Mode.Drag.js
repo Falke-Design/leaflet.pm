@@ -7,6 +7,10 @@ const GlobalDragMode = {
     return !!this._globalDragMode;
   },
   enableGlobalDragMode() {
+    if(this.map.pm.guidelinesEnabled()){
+      this.map.pm.showGuidelines();
+    }
+
     const layers = findLayers(this.map);
 
     this._globalDragMode = true;
@@ -42,6 +46,8 @@ const GlobalDragMode = {
     // toogle the button in the toolbar if this is called programatically
     this.Toolbar.toggleButton('dragMode', this._globalDragMode);
 
+    this.map.pm.hideGuidelines();
+
     this._fireDragModeEvent(false);
   },
   _fireDragModeEvent(enabled) {
@@ -58,7 +64,7 @@ const GlobalDragMode = {
     }
   },
   reinitGlobalDragMode({ layer }) {
-    // do nothing if layer is not handled by leaflet so it doesn't fire unnecessarily	
+    // do nothing if layer is not handled by leaflet so it doesn't fire unnecessarily
     const isRelevant = !!layer.pm && !layer._pmTempLayer;
     if (!isRelevant) {
       return;

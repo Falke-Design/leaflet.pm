@@ -127,6 +127,18 @@ const SnapMixin = {
       marker._snapped = true;
 
       const triggerSnap = () => {
+        if(closestLayer.layer._helpLine){
+          this._map.pm._showHideHelplines(closestLayer.layer);
+        }else if(closestLayer.layer._helpPoint){
+          this._map.pm._showHideHelplines(closestLayer.layer);
+          if(closestLayer.layer._helpLines){
+            closestLayer.layer._helpLines.forEach((line)=>{
+              this._map.pm._showHelpline(line);
+            });
+          }
+        }else{
+          this._map.pm._hideHelplines();
+        }
         this._snapLatLng = snapLatLng;
         marker.fire('pm:snap', eventInfo);
         this._layer.fire('pm:snap', eventInfo);
@@ -142,6 +154,8 @@ const SnapMixin = {
       }
     } else if (this._snapLatLng) {
       // no more snapping
+
+      this._map.pm._hideHelplines();
 
       // if it was previously snapped...
       // ...unsnap
@@ -265,9 +279,16 @@ const SnapMixin = {
       this._snapList = layers;
     }
 
+    if(this._map.pm.guidelinesEnabled()){
+      this._snapList = this._snapList.concat(this._map.pm.createAllHelplines());
+    }
+
     this.debugIndicatorLines = debugIndicatorLines;
   },
   _calcClosestLayer(latlng, layers) {
+    const prio = ['Polyline','Marker'];
+    const prioInstance = [L.Polyline,L.Marker];
+    let prioLayer = false;
     // the closest polygon to our dragged marker latlng
     let closestLayer = {};
 
@@ -280,17 +301,25 @@ const SnapMixin = {
       // find the closest latlng, segment and the distance of this layer to the dragged marker latlng
       const results = this._calcLayerDistances(latlng, layer);
 
-      // show indicator lines, it's for debugging
-      this.debugIndicatorLines[index].setLatLngs([latlng, results.latlng]);
+      if(this.debugIndicatorLines[index]) {
+        // show indicator lines, it's for debugging
+        this.debugIndicatorLines[index].setLatLngs([latlng, results.latlng]);
+      }
 
       // save the info if it doesn't exist or if the distance is smaller than the previous one
-      if (
-        closestLayer.distance === undefined ||
-        results.distance < closestLayer.distance
-      ) {
+
+      if(closestLayer.distance === undefined){
+        closestLayer = results;
+        closestLayer.layer = layer;
+      }else if(layer instanceof L.Marker && results.distance < this.options.snapDistance){
+        prioLayer = true;
+        closestLayer = results;
+        closestLayer.layer = layer;
+      }else if(!prioLayer && results.distance < closestLayer.distance){
         closestLayer = results;
         closestLayer.layer = layer;
       }
+
     });
 
     // return the closest layer and it's data
@@ -402,6 +431,12 @@ const SnapMixin = {
       .latLngToLayerPoint(latlngA)
       .distanceTo(map.latLngToLayerPoint(latlngB));
   },
+  addLayerToSnapList(layer){
+    this._snapList.push(layer);
+  },
+  addLayersToSnapList(layers){
+    this._snapList = this._snapList.concat(layers);
+  }
 };
 
 export default SnapMixin;

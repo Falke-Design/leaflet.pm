@@ -10,7 +10,14 @@ const Draw = L.Class.extend({
     finishOnDoubleClick: false,
     finishOn: null,
     allowSelfIntersection: true,
-    templineStyle: {},
+    pathOptions: {
+      color: '#3388ff',
+      dashArray: null,
+    },
+    templineStyle: {
+      color: '#3388ff',
+      dashArray: null,
+    },
     hintlineStyle: {
       color: '#3388ff',
       dashArray: '5,5',
@@ -36,6 +43,12 @@ const Draw = L.Class.extend({
   },
   setPathOptions(options) {
     this.options.pathOptions = options;
+  },
+  getPathOptions() {
+    return this.options.pathOptions;
+  },
+  getOptions() {
+    return this.options;
   },
   getShapes() {
     // if somebody wants to know what shapes are available
@@ -93,7 +106,17 @@ const Draw = L.Class.extend({
         shape: this._shape,
         map: this._map,
       });
+
+      if(this._enabled) {
+        if (this._map.pm.guidelinesEnabled()) {
+          this._map.pm.showGuidelines();
+        }
+      }else{
+        this._map.pm.hideGuidelines();
+      }
     }
+
+
   },
 
   createNewDrawInstance(name, jsClass) {
@@ -132,7 +155,7 @@ const Draw = L.Class.extend({
       "drawCircleMarker": "CircleMarker",
       "editMode": "Edit",
       "dragMode": "Drag",
-      "cutPoylgon": "Cut",
+      "cutPolygon": "Cut",
       "removalMode": "Removal"
     };
 
@@ -140,6 +163,19 @@ const Draw = L.Class.extend({
       return shapeMapping[name];
     }
     return this[name] ? this[name]._shape : name;
+  },
+  applyDrawStyles(){
+    this.shapes.forEach(shape => {
+      this[shape].applyStyle();
+    });
+  },
+  applyStyle(){
+    if(this._layer){
+      this._layer.setStyle(this.options.templineStyle);
+    }
+    if(this._hintline){
+      this._hintline.setStyle(this.options.hintlineStyle);
+    }
   }
 });
 

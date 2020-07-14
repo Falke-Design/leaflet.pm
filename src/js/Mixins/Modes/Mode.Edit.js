@@ -23,9 +23,13 @@ const GlobalEditMode = {
     const options = {
       snappable: this._globalSnappingEnabled,
       ...o
-    }
+    };
 
     const status = true;
+
+    if(this.map.pm.guidelinesEnabled()){
+      this.map.pm.showGuidelines();
+    }
 
     // Set toolbar button to currect status
     this.Toolbar.toggleButton('editMode', status);
@@ -63,6 +67,8 @@ const GlobalEditMode = {
 
     // Set toolbar button to currect status
     this.Toolbar.toggleButton('editMode', status);
+
+    this.map.pm.hideGuidelines();
 
     this.setGlobalEditStatus(status);
   },

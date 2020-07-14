@@ -276,6 +276,7 @@ Draw.Line = Draw.extend({
       return;
     }
 
+
     // is this the first point?
     const first = this._layer.getLatLngs().length === 0;
 
@@ -283,6 +284,7 @@ Draw.Line = Draw.extend({
     const newMarker = this._createMarker(latlng, first);
 
     this._hintline.setLatLngs([latlng, latlng]);
+
 
     this._layer.fire('pm:vertexadded', {
       shape: this._shape,
@@ -352,6 +354,9 @@ Draw.Line = Draw.extend({
     if (second) {
       this._hintMarker.setTooltipContent(getTranslation('tooltips.finishLine'));
     }
+
+    const helpLayers = this._map.pm.createLayerHelplines(marker);
+    this.addLayersToSnapList(helpLayers);
 
     return marker;
   },

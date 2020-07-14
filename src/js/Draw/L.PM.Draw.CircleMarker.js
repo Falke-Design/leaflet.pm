@@ -124,6 +124,10 @@ Draw.CircleMarker = Draw.Marker.extend({
     if (!this._enabled) {
       return;
     }
+
+    // change enabled state
+    this._enabled = false;
+
     // disable when drawing like a Circle
     if (this.options.editable) {
       // reset cursor
@@ -155,6 +159,7 @@ Draw.CircleMarker = Draw.Marker.extend({
 
     // fire drawend event
     this._map.fire('pm:drawend', { shape: this._shape });
+    this._setGlobalDrawMode();
 
     // toggle the draw button of the Toolbar in case drawing mode got disabled without the button
     this._map.pm.Toolbar.toggleButton(this.toolbarButtonName, false);
@@ -163,9 +168,6 @@ Draw.CircleMarker = Draw.Marker.extend({
     if (this.options.snappable) {
       this._cleanupSnapping();
     }
-
-    // change enabled state
-    this._enabled = false;
   },
   _placeCenterMarker(e) {
     // assign the coordinate of the click to the hintMarker, that's necessary for
@@ -290,5 +292,9 @@ Draw.CircleMarker = Draw.Marker.extend({
       shape: this._shape,
       layer: circleLayer,
     });
+  },
+  // Draw.Marker overwrite the default function, so we call explicit the default function
+  applyStyle(){
+    this._map.pm.Draw.applyStyle.call(this);
   },
 });

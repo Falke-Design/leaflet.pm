@@ -154,4 +154,7 @@ Draw.Marker = Draw.extend({
       this._handleSnapping(fakeDragEvent);
     }
   },
+  applyStyle(){
+    // No special style for Markers
+  }
 });

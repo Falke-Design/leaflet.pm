@@ -90,3 +90,25 @@ export function createGeodesicPolygon(origin, radius, sides, rotation) {
 
   return points;
 }
+
+export function destination(point, dis, angle) {
+  const result = {};
+  angle = angle <= 0 ? angle + 360 : angle;
+  angle -= 90;
+
+  result.lat = Math.cos(angle * Math.PI / 180) * dis + point.lat;
+  result.lng = Math.sin(angle * Math.PI / 180) * dis + point.lng;
+
+  return result;
+}
+
+export function distance(p1,p2, map){
+  if(p1 instanceof L.LatLng && p2 instanceof L.LatLng){
+    p1 = map.latLngToContainerPoint(p1);
+    p2 = map.latLngToContainerPoint(p2);
+  }
+  const x = p1.x - p2.x;
+  const y = p1.y - p2.y;
+  return Math.sqrt( x*x + y*y );
+}
+

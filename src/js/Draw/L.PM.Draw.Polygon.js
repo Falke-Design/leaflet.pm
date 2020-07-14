@@ -94,6 +94,13 @@ Draw.Polygon = Draw.Line.extend({
       this._hintMarker.setTooltipContent(getTranslation('tooltips.finishPoly'));
     }
 
+    const helpLayers = this._map.pm.createLayerHelplines(marker);
+    if(first) {
+      this._otherSnapLayers = this._otherSnapLayers.concat(helpLayers);
+    }else{
+      this.addLayersToSnapList(helpLayers);
+    }
+
     return marker;
   },
 });

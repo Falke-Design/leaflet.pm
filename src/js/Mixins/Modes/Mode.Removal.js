@@ -11,9 +11,15 @@ const GlobalRemovalMode = {
     // toogle the button in the toolbar if this is called programatically
     this.Toolbar.toggleButton('deleteLayer', this._globalRemovalMode);
 
+    this.map.pm.hideGuidelines();
+
     this._fireRemovalModeEvent(false);
   },
   enableGlobalRemovalMode() {
+    if(this.map.pm.guidelinesEnabled()){
+      this.map.pm.showGuidelines();
+    }
+
     const isRelevant = layer =>
       layer.pm &&
       !(layer instanceof L.LayerGroup);
@@ -69,6 +75,7 @@ const GlobalRemovalMode = {
       !layer._pmTempLayer && (!layer.pm || !layer.pm.dragging());
 
     if (removeable) {
+      this.map.pm.removeGuideline(layer);
       layer.remove();
       layer.fire('pm:remove', { layer });
       this.map.fire('pm:remove', { layer });

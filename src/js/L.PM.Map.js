@@ -6,11 +6,12 @@ import Utils from './L.PM.Utils'
 import GlobalEditMode from './Mixins/Modes/Mode.Edit';
 import GlobalDragMode from './Mixins/Modes/Mode.Drag';
 import GlobalRemovalMode from './Mixins/Modes/Mode.Removal';
+import GuidelineMixin from "./Mixins/Guidline";
 
 const { findLayers } = Utils
 
 const Map = L.Class.extend({
-  includes: [GlobalEditMode, GlobalDragMode, GlobalRemovalMode],
+  includes: [GlobalEditMode, GlobalDragMode, GlobalRemovalMode,GuidelineMixin],
   initialize(map) {
     this.map = map;
     this.Draw = new L.PM.Draw(map);
@@ -75,7 +76,6 @@ const Map = L.Class.extend({
       }
     })
   },
-
   getGlobalOptions() {
     return this.globalOptions;
   },

@@ -17,6 +17,7 @@ const Toolbar = L.Class.extend({
     cutPolygon: true,
     removalMode: true,
     snappingOption: true,
+    guidelineMode: true,
     drawControls: true,
     editControls: true,
     optionsControls: true,
@@ -145,7 +146,7 @@ const Toolbar = L.Class.extend({
     // the options toolbar should not be disabled during the different modes
     // TODO: probably need to abstract this a bit so different options are automatically
     // disabled for different modes, like pinning for circles
-    const exceptOptionButtons = ['snappingOption']
+    const exceptOptionButtons = ['snappingOption','guidelineMode']
 
     for (const name in this.buttons) {
       if (
@@ -346,6 +347,36 @@ const Toolbar = L.Class.extend({
       actions: ['finishMode'],
     };
 
+    const guidelineActions = [
+      {
+        text: 'Remove all',
+        onClick: ()=>{this.map.pm.removeAllGuidelines()}
+      },
+      {
+        text: 'Enable',
+        onClick: ()=>{this.map.pm.enableGuidelines()}
+      },
+      {
+        text: 'Disable',
+        onClick: ()=>{this.map.pm.disableGuidelines()}
+      },
+    ];
+
+    const guidelineButton = {
+      title: getTranslation('buttonTitles.snappingButton'),
+      className: 'control-icon leaflet-pm-icon-snapping',
+      onClick: () => { },
+      afterClick: () => {
+        this.map.pm.toggleDrawGuidelines();
+      },
+      doToggle: true,
+      toggleStatus: false,
+      disableOtherButtons: false,
+      position: this.options.position,
+      tool: 'options',
+      actions: guidelineActions,
+    };
+
     this._addButton('drawMarker', new L.Control.PMButton(drawMarkerButton));
     this._addButton('drawPolyline', new L.Control.PMButton(drawLineButton));
     this._addButton('drawRectangle', new L.Control.PMButton(drawRectButton));
@@ -356,6 +387,7 @@ const Toolbar = L.Class.extend({
     this._addButton('dragMode', new L.Control.PMButton(dragButton));
     this._addButton('cutPolygon', new L.Control.PMButton(cutButton));
     this._addButton('removalMode', new L.Control.PMButton(deleteButton));
+    this._addButton('guidelineMode', new L.Control.PMButton(guidelineButton));
   },
 
   _showHideButtons() {
