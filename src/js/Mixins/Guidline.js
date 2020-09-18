@@ -2,6 +2,7 @@ import Utils from "../L.PM.Utils";
 import {createGeodesicPolygon, destination, distance} from "../helpers";
 import intersect from "@turf/intersect";
 import lineIntersect from "@turf/line-intersect";
+
 const { findLayers } = Utils;
 
 const GuidelineMixin = {
@@ -161,7 +162,7 @@ const GuidelineMixin = {
   },
   createAllHelplines(){
     this.helplines = [];
-    const layers = findLayers(this.map);
+    const layers = findLayers(this.map, true);
     layers.forEach((layer) => {
       this.helplines = this.helplines.concat(this._createHelplines(layer));
     });
@@ -170,7 +171,7 @@ const GuidelineMixin = {
     return this.helplines;
   },
   _createHelplines(layer){
-    var dis = 100;
+    const dis = 100;
     let helplines = [];
     if(layer instanceof L.Polyline){
       layer.getLatLngs().flat().forEach((latlng)=>{
@@ -195,18 +196,18 @@ const GuidelineMixin = {
   },
   createLayerHelplines(layer){
     let helplines = this.helplines.concat(this._createHelplines(layer));
-    helplines = helplines.concat(this._createIntersectionPoints(helplines.concat(findLayers(this.map))));
+    helplines = helplines.concat(this._createIntersectionPoints(helplines.concat(findLayers(this.map,true))));
     this.helplines = helplines;
     return helplines;
   },
   _createIntersectionLines (latlng, d, w) {
-    var o1 = destination(latlng,d,w)
-    var o12 = destination(latlng,d,w-180)
-    var o2 = destination(latlng,d,w-90)
-    var o22 = destination(latlng,d,w+90)
+    const o1 = destination(latlng,d,w)
+    const o12 = destination(latlng,d,w-180)
+    const o2 = destination(latlng,d,w-90)
+    const o22 = destination(latlng,d,w+90)
 
-    var poly1 = L.polyline([this.getLatLngFromGeoJson(o12),this.getLatLngFromGeoJson(o1)]);
-    var poly2 = L.polyline([this.getLatLngFromGeoJson(o22),this.getLatLngFromGeoJson(o2)]);
+    const poly1 = L.polyline([this.getLatLngFromGeoJson(o12),this.getLatLngFromGeoJson(o1)]);
+    const poly2 = L.polyline([this.getLatLngFromGeoJson(o22),this.getLatLngFromGeoJson(o2)]);
     poly1._helpLine = true;
     poly2._helpLine = true;
     return [poly1,poly2];
@@ -251,7 +252,7 @@ const GuidelineMixin = {
   },
   getLatLngFromGeoJson(geojson){
     return geojson;
-    //return L.latLng([geojson.geometry.coordinates[1],geojson.geometry.coordinates[0]]);
+    // return L.latLng([geojson.geometry.coordinates[1],geojson.geometry.coordinates[0]]);
   },
   _showHideHelplines(layer){
     this._hideHelplines();
