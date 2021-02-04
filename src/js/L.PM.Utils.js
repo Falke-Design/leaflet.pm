@@ -54,7 +54,13 @@ const Utils = {
       delete layer._tempPopupCopy;
     }
   },
+  _preventFireEvents(value){
+    this._preventEvents = value;
+  },
   _fireEvent(layer,type,data,propagate = false) {
+    if(this._preventEvents){
+      return;
+    }
     layer.fire(type, data, propagate);
 
     // fire event to all parent layers
@@ -62,6 +68,12 @@ const Utils = {
     groups.forEach((group) => {
       group.fire(type, data, propagate);
     });
+
+    if(layer._map){
+      layer._map.fire(type, data, false);
+    }else if(layer.pm && layer.pm._getMap && layer.pm._getMap()){
+      layer.pm._getMap().fire(type, data, false);
+    }
   },
   getAllParentGroups(layer){
     const groupIds = [];

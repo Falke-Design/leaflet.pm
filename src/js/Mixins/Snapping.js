@@ -216,6 +216,14 @@ const SnapMixin = {
 
     // save snaplist from layers and the other snap layers added from other classes/scripts
     if (this._otherSnapLayers) {
+      // TODO: move to develop
+      this._otherSnapLayers.forEach(()=>{
+        // this is for debugging
+        const debugLine = L.polyline([], {color: 'red', pmIgnore: true});
+        debugLine._pmTempLayer = true;
+        debugIndicatorLines.push(debugLine);
+      });
+
       this._snapList = layers.concat(this._otherSnapLayers);
     } else {
       this._snapList = layers;

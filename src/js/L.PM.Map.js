@@ -5,11 +5,12 @@ import Utils from './L.PM.Utils'
 import GlobalEditMode from './Mixins/Modes/Mode.Edit';
 import GlobalDragMode from './Mixins/Modes/Mode.Drag';
 import GlobalRemovalMode from './Mixins/Modes/Mode.Removal';
+import GlobalHistoryMode from './Mixins/Modes/Mode.History';
 
-const { findLayers } = Utils
+const { findLayers } = Utils;
 
 const Map = L.Class.extend({
-  includes: [GlobalEditMode, GlobalDragMode, GlobalRemovalMode],
+  includes: [GlobalEditMode, GlobalDragMode, GlobalRemovalMode,GlobalHistoryMode],
   initialize(map) {
     this.map = map;
     this.Draw = new L.PM.Draw(map);
@@ -27,6 +28,7 @@ const Map = L.Class.extend({
         markerPane: 'markerPane'
       }
     };
+    this._enableHistoryRecording();
   },
   setLang(lang = 'en', t, fallback = 'en') {
     const oldLang = L.PM.activeLang;

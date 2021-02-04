@@ -150,6 +150,11 @@ Draw.Cut = Draw.Polygon.extend({
       layer.remove();
       layer.removeFrom(this._map.pm._getContainingLayer());
 
+
+      // remove templayer prop
+      delete l._pmTempLayer;
+      delete layer._pmTempLayer;
+
       // Remove it only if it is a layergroup. It can be only not a layergroup if a layer exists
       if (resultingLayer.getLayers && resultingLayer.getLayers().length === 0) {
         this._map.pm.removeLayer({ target: resultingLayer });

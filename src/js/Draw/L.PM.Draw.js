@@ -84,6 +84,10 @@ const Draw = L.Class.extend({
       this[shape].disable();
     });
   },
+  cancel(){
+    this._map.pm.undoHistoryBreakpoint();
+    this.disable();
+  },
   addControls() {
     // add control buttons for our shapes
     this.shapes.forEach(shape => {
@@ -174,11 +178,12 @@ const Draw = L.Class.extend({
     return this[name] ? this[name]._shape : name;
   },
   _finishLayer(layer){
-    // add the pm options from drawing to the new layer (edit)
-    layer.pm.setOptions(this.options);
-    // set the shape (can be a custom shape)
     if(layer.pm) {
+      // add the pm options from drawing to the new layer (edit)
+      layer.pm.setOptions(this.options);
+      // set the shape (can be a custom shape)
       layer.pm._shape = this._shape;
+      layer.pm._map = layer._map || this._map;
     }
     this._addDrawnLayerProp(layer);
   },

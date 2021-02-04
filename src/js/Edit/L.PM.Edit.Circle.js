@@ -7,13 +7,14 @@ Edit.Circle = Edit.extend({
   initialize(layer) {
     this._layer = layer;
     this._enabled = false;
+    this._setMap();
     // create polygon around the circle border
     this._updateHiddenPolyCircle();
   },
   enable(options) {
     L.Util.setOptions(this, options);
 
-    this._map = this._layer._map;
+    this._setMap();
 
     if (!this.enabled()) {
       // if it was already enabled, disable first
@@ -252,6 +253,7 @@ Edit.Circle = Edit.extend({
   _fireEdit() {
     // fire edit event
     Utils._fireEvent(this._layer,'pm:edit', { layer: this._layer, shape: this.getShape() });
+    Utils._fireEvent(this._map,'pm:edit', { layer: this._layer, shape: this.getShape() });
     this._layerEdited = true;
   },
   _fireDragStart() {

@@ -13,7 +13,7 @@ const DragMixin = {
     if (this._layer instanceof L.Marker) {
       this._layer.on('dragstart', this._fireDragStart, this);
       this._layer.on('drag', this._fireDrag, this);
-      this._layer.on('dragend', this._fireDragEnd, this);
+      this._layer.on('dragend', this._onDragEnd, this);
 
       if (this.options.snappable) {
         this._initSnappableMarkers();

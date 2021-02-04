@@ -19,6 +19,8 @@ const PMButton = L.Control.extend({
         this._container = this._map.pm.Toolbar.optionsContainer;
       } else if (this._button.tool === 'custom') {
         this._container = this._map.pm.Toolbar.customContainer;
+      } else if (this._button.tool === 'history') {
+        this._container = this._map.pm.Toolbar.historyContainer;
       } else {
         this._container = this._map.pm.Toolbar.drawContainer;
       }
@@ -70,6 +72,15 @@ const PMButton = L.Control.extend({
     this._button.onClick(e, { button: this, event: e });
     this._clicked(e);
     this._button.afterClick(e, { button: this, event: e });
+
+    // TODO: move to develop
+    // if a click button remove focus so that css 'grey' is not longer applied
+    if(!this._button.toggleStatus){
+      this._map.getContainer().focus()
+    }
+    if(["redoMode","undoMode"].indexOf(this._map.pm.Toolbar._getButtonName(this)) === -1) {
+      this._map.pm.createHistoryBreakpoint();
+    }
   },
   _makeButton(button) {
     const pos = this.options.position.indexOf("right") > -1 ? "pos-right" : "";
@@ -77,7 +88,7 @@ const PMButton = L.Control.extend({
     // button container
     const buttonContainer = L.DomUtil.create(
       'div',
-      'button-container',
+      `button-container ${pos}`,
       this._container
     );
 
@@ -104,6 +115,7 @@ const PMButton = L.Control.extend({
       cancel: {
         text: getTranslation('actions.cancel'),
         onClick() {
+          this._map.pm.undoHistoryBreakpoint();
           this._triggerClick();
         },
       },
@@ -122,7 +134,13 @@ const PMButton = L.Control.extend({
       finish: {
         text: getTranslation('actions.finish'),
         onClick(e) {
-          this._map.pm.Draw[button.jsClass]._finishShape(e);
+
+          if(this._map.pm.Draw[button.jsClass]._finishShape) {
+            this._map.pm.Draw[button.jsClass]._finishShape(e);
+          }else if(this._map.pm.Draw[button.jsClass]._createMarker){
+            this._map.pm.Draw[button.jsClass]._createMarker(e);
+          }
+
         },
       },
     };

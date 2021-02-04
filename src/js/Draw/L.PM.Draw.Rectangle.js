@@ -241,6 +241,17 @@ Draw.Rectangle = Draw.extend({
     return [northwest, northeast, southeast, southwest];
   },
   _finishShape(e) {
+    // check if this._layer has different coords as [0,0] else nothing was drawn
+    if(this._layer.getBounds().equals(L.latLngBounds([[0,0],[0,0]]))){
+      return;
+    }
+
+    // when no latlng on the event object is passed, we use the current place of the hintMarker
+    if(!e || !e.latlng){
+      e = e || {};
+      e.latlng = this._hintMarker.getLatLng();
+    }
+
     // assign the coordinate of the click to the hintMarker, that's necessary for
     // mobile where the marker can't follow a cursor
     if (!this._hintMarker._snapped) {

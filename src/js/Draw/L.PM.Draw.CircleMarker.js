@@ -32,6 +32,7 @@ Draw.CircleMarker = Draw.Marker.extend({
 
       // this is the circle we want to draw
       this._layer = L.circleMarker([0, 0], this.options.templineStyle);
+      this._layer.setRadius(0);
       this._setPane(this._layer,'layerPane');
       this._layer._pmTempLayer = true;
       this._layerGroup.addLayer(this._layer);
@@ -254,9 +255,21 @@ Draw.CircleMarker = Draw.Marker.extend({
     return layer instanceof L.CircleMarker && !(layer instanceof L.Circle) && layer.pm && !layer._pmTempLayer;
   },
   _createMarker(e) {
-    // with _layerIsDragging we check if a circlemarker is currently dragged
-    if (!e.latlng || this._layerIsDragging) {
+    // check if it is editable, then go to the correct finish function
+    if(this.options.editable === true){
+      this._finishShape(e);
       return;
+    }
+
+    // with _layerIsDragging we check if a circlemarker is currently dragged
+    if (this._layerIsDragging) {
+      return;
+    }
+
+    // when no latlng on the event object is passed, we use the current place of the hintMarker
+    if(!e || !e.latlng){
+      e = e || {};
+      e.latlng = this._hintMarker.getLatLng();
     }
 
     // assign the coordinate of the click to the hintMarker, that's necessary for
@@ -294,6 +307,23 @@ Draw.CircleMarker = Draw.Marker.extend({
     }
   },
   _finishShape(e) {
+    // check if it is not editable, then go to the correct finish function
+    if(this.options.editable === false){
+      this._createMarker(e);
+      return;
+    }
+
+    // check if this._layer has different coords as [0,0] else nothing was drawn
+    if(this._layer.getLatLng().equals(L.latLng([0,0])) && this._layer.getRadius() === 0){
+      return;
+    }
+
+    // when no latlng on the event object is passed, we use the current place of the hintMarker
+    if(!e || !e.latlng){
+      e = e || {};
+      e.latlng = this._hintMarker.getLatLng();
+    }
+
     // assign the coordinate of the click to the hintMarker, that's necessary for
     // mobile where the marker can't follow a cursor
     if (!this._hintMarker._snapped) {

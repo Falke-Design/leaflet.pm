@@ -16,6 +16,8 @@ const Toolbar = L.Class.extend({
     dragMode: true,
     cutPolygon: true,
     removalMode: true,
+    undoMode: true,
+    redoMode: true,
     snappingOption: true,
     drawControls: true,
     editControls: true,
@@ -65,6 +67,10 @@ const Toolbar = L.Class.extend({
       'div',
       'leaflet-pm-toolbar leaflet-pm-custom leaflet-bar leaflet-control'
     );
+    this.historyContainer = L.DomUtil.create(
+      'div',
+      'leaflet-pm-toolbar leaflet-pm-history leaflet-bar leaflet-control'
+    );
 
     this._defineButtons();
   },
@@ -100,6 +106,8 @@ const Toolbar = L.Class.extend({
 
     // now show the specified buttons
     this._showHideButtons();
+
+    this.map.pm._updateHistoryControls();
     this.isVisible = true;
   },
   applyIconStyle() {
@@ -198,6 +206,14 @@ const Toolbar = L.Class.extend({
     // now toggle the state of the button
     return this.buttons[name].toggle(status);
   },
+  _getButtonName(button){
+    for(const name in this.buttons){
+      if(button === this.buttons[name]){
+        return name;
+      }
+    }
+    return null;
+  },
   _defineButtons() {
     // some buttons are still in their respective classes, like L.PM.Draw.Polygon
     const drawMarkerButton = {
@@ -213,7 +229,7 @@ const Toolbar = L.Class.extend({
       toggleStatus: false,
       disableOtherButtons: true,
       position: this.options.position,
-      actions: ['cancel'],
+      actions: ['finish','cancel'],
     };
 
     const drawPolyButton = {
@@ -261,7 +277,7 @@ const Toolbar = L.Class.extend({
       toggleStatus: false,
       disableOtherButtons: true,
       position: this.options.position,
-      actions: ['cancel'],
+      actions: ['finish','cancel'],
     };
 
     const drawCircleMarkerButton = {
@@ -277,7 +293,7 @@ const Toolbar = L.Class.extend({
       toggleStatus: false,
       disableOtherButtons: true,
       position: this.options.position,
-      actions: ['cancel'],
+      actions: ['finish','cancel'],
     };
 
     const drawRectButton = {
@@ -293,7 +309,7 @@ const Toolbar = L.Class.extend({
       toggleStatus: false,
       disableOtherButtons: true,
       position: this.options.position,
-      actions: ['cancel'],
+      actions: ['finish','cancel'],
     };
 
     const editButton = {
@@ -308,7 +324,7 @@ const Toolbar = L.Class.extend({
       disableOtherButtons: true,
       position: this.options.position,
       tool: 'edit',
-      actions: ['finishMode'],
+      actions: ['finishMode','cancel'],
     };
 
     const dragButton = {
@@ -323,7 +339,7 @@ const Toolbar = L.Class.extend({
       disableOtherButtons: true,
       position: this.options.position,
       tool: 'edit',
-      actions: ['finishMode'],
+      actions: ['finishMode','cancel'],
     };
 
     const cutButton = {
@@ -359,8 +375,40 @@ const Toolbar = L.Class.extend({
       disableOtherButtons: true,
       position: this.options.position,
       tool: 'edit',
-      actions: ['finishMode'],
+      actions: ['finishMode','cancel'],
     };
+
+
+    const undoButton = {
+      title: getTranslation('undo'),
+      className: 'control-icon leaflet-pm-icon-undo',
+      onClick: () => { },
+      afterClick: () => {
+        this.map.pm.undoHistory();
+      },
+      doToggle: false,
+      toggleStatus: false,
+      disableOtherButtons: false,
+      position: this.options.position,
+      tool: 'history',
+      actions: [],
+    };
+
+    const redoButton = {
+      title: getTranslation('redo'),
+      className: 'control-icon leaflet-pm-icon-redo',
+      onClick: () => { },
+      afterClick: () => {
+        this.map.pm.redoHistory();
+      },
+      doToggle: false,
+      toggleStatus: false,
+      disableOtherButtons: false,
+      position: this.options.position,
+      tool: 'history',
+      actions: [],
+    };
+
 
     this._addButton('drawMarker', new L.Control.PMButton(drawMarkerButton));
     this._addButton('drawPolyline', new L.Control.PMButton(drawLineButton));
@@ -372,6 +420,8 @@ const Toolbar = L.Class.extend({
     this._addButton('dragMode', new L.Control.PMButton(dragButton));
     this._addButton('cutPolygon', new L.Control.PMButton(cutButton));
     this._addButton('removalMode', new L.Control.PMButton(deleteButton));
+    this._addButton('undoMode', new L.Control.PMButton(undoButton));
+    this._addButton('redoMode', new L.Control.PMButton(redoButton));
   },
 
   _showHideButtons() {

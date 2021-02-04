@@ -127,8 +127,10 @@ Draw.Marker = Draw.extend({
     }
   },
   _createMarker(e) {
-    if (!e.latlng) {
-      return;
+    // when no latlng on the event object is passed, we use the current place of the hintMarker
+    if(!e || !e.latlng){
+      e = e || {};
+      e.latlng = this._hintMarker.getLatLng();
     }
 
     // assign the coordinate of the click to the hintMarker, that's necessary for

@@ -25,7 +25,7 @@ Edit.Line = Edit.extend({
   enable(options) {
     L.Util.setOptions(this, options);
 
-    this._map = this._layer._map;
+    this._setMap();
 
     // cancel when map isn't available, this happens when the polygon is removed before this fires
     if (!this._map) {
@@ -470,7 +470,7 @@ Edit.Line = Edit.extend({
 
     // if no coords are left, remove the layer
     if (isEmptyDeep(coords)) {
-      this._layer.remove();
+      this.removeLayer();
     }
 
     // remove all empty coord-rings

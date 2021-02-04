@@ -7,14 +7,12 @@ Edit.Marker = Edit.extend({
     // layer is a marker in this case :-)
     this._layer = layer;
     this._enabled = false;
-
-    // register dragend event e.g. to fire pm:edit
-    this._layer.on('dragend', this._onDragEnd, this);
+    this._setMap();
   },
   enable(options = { draggable: true }) {
     L.Util.setOptions(this, options);
 
-    this._map = this._layer._map;
+    this._setMap();
 
     if (this.enabled()) {
       return;
@@ -74,8 +72,9 @@ Edit.Marker = Edit.extend({
     Utils._fireEvent(this._map,'pm:remove', { layer: marker, shape: this.getShape() });
   },
   _onDragEnd(e) {
-    const marker = e.target;
+    this._fireDragEnd(e);
 
+    const marker = e.target;
     // fire the pm:edit event and pass shape and marker
     Utils._fireEvent(marker,'pm:edit', { layer: this._layer, shape: this.getShape() });
     this._layerEdited = true;
