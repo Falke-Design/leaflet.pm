@@ -57,9 +57,16 @@ Edit.Rectangle = Edit.Polygon.extend({
   // Add marker events after adding the snapping events to the markers, beacause of the execution order
   _addMarkerEvents(){
     this._markers[0].forEach((marker)=>{
-      marker.on('dragstart', this._onMarkerDragStart, this);
-      marker.on('drag', this._onMarkerDrag, this);
-      marker.on('dragend', this._onMarkerDragEnd, this);
+      if(this.options.rotate) {
+        marker.on('dragstart', this._onRotateStart, this);
+        marker.on('drag', this._onRotate, this);
+        marker.on('dragend', this._onRotateEnd, this);
+      }else {
+        marker.on('dragstart', this._onMarkerDragStart, this);
+        marker.on('drag', this._onMarkerDrag, this);
+        marker.on('dragend', this._onMarkerDragEnd, this);
+      }
+
       marker.on('pm:snap', this._adjustRectangleForMarkerSnap, this);
       if (!this.options.preventMarkerRemoval) {
         marker.on('contextmenu', this._removeMarker, this);
