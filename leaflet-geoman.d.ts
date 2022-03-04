@@ -45,6 +45,14 @@ declare module 'leaflet' {
   }
 
   /**
+   * Extends built in leaflet MarkerOptions with options for Text-Layer
+   */
+  interface MarkerOptions {
+    textMarker?: boolean;
+    text?: string;
+  }
+
+  /**
    * Extends built in leaflet Polyline.
    */
   interface Polyline {
@@ -286,6 +294,11 @@ declare module 'leaflet' {
     once(type: 'pm:positionchange', fn: PM.PositionChangeEventHandler): this;
     off(type: 'pm:positionchange', fn?: PM.PositionChangeEventHandler): this;
 
+    /** Fired when position / coordinates of a layer changed. */
+    on(type: 'pm:textchange', fn: PM.TextChangeEventHandler): this;
+    once(type: 'pm:textchange', fn: PM.TextChangeEventHandler): this;
+    off(type: 'pm:textchange', fn?: PM.TextChangeEventHandler): this;
+
     /******************************************
      *
      * TODO: EDIT MODE EVENTS ON MAP ONLY
@@ -467,6 +480,7 @@ declare module 'leaflet' {
       | 'Cut'
       | 'CircleMarker'
       | 'ImageOverlay'
+      | 'Text'
       | string;
 
     /**
@@ -599,6 +613,7 @@ declare module 'leaflet' {
       | 'cutPolygon'
       | 'removalMode'
       | 'rotateMode'
+      | 'drawText'
       | string;
 
     interface PMMapToolbar {
@@ -1045,6 +1060,18 @@ declare module 'leaflet' {
 
       /** Cut-Mode: Only the passed layers can be cut. Cutted layers are removed from the Array until no layers are left anymore and cutting is working on all layers again. (Default: []) */
       layersToCut?: L.Layer[];
+
+      /** Predefined text for Text-Layer. */
+      text?: string
+
+      /** Directly after placing the Text-Layer text editing is activated. */
+      focusAfterDraw?: boolean
+
+      /** The text layer is removed if no text is written. */
+      removeIfEmpty?: boolean
+
+      /** Custom CSS Classes for Text-Layer. Separated by a space. */
+      className?: string
     }
 
     /**
@@ -1071,6 +1098,9 @@ declare module 'leaflet' {
 
       /** Adds button to draw Polygon (default:true) */
       drawPolygon?: boolean;
+
+      /** Adds button to draw Text (default:true) */
+      drawText?: boolean;
 
       /** Adds button to draw Circle (default:true) */
       drawCircle?: boolean;
@@ -1127,7 +1157,7 @@ declare module 'leaflet' {
       options?: L.ControlPosition;
     }
 
-    interface PMEditLayer {
+    interface PMEditLayer extends PMEditTextLayer {
       /** Enables edit mode. The passed options are preserved, even when the mode is enabled via the Toolbar */
       enable(options?: EditModeOptions): void;
 
@@ -1151,6 +1181,26 @@ declare module 'leaflet' {
 
       /** Removes the layer with the same checks as GlobalRemovalMode. */
       remove(): void;
+    }
+
+    interface PMEditTextLayer {
+      /** Activate text editing of Text-Layer. */
+      focus(): void;
+
+      /** Deactivate text editing of Text-Layer. */
+      blur(): void;
+
+      /** Is text editing active on Text-Layer. */
+      hasFocus(): boolean;
+
+      /** Returns the `<textarea>` DOM element of Text-Layer. */
+      getElement(): HTMLElement;
+
+      /** Set text on Text-Layer. */
+      setText(text: string): void;
+
+      /** Returns the text of Text-Layer. */
+      getText(): string
     }
 
     interface PMDragLayer {
@@ -1351,6 +1401,11 @@ declare module 'leaflet' {
       shape: PM.SUPPORTED_SHAPES;
       layer: L.Layer;
       latlng: L.LatLng | L.LatLng[];
+    }) => void;
+    export type TextChangeEventHandler = (e: {
+      shape: PM.SUPPORTED_SHAPES;
+      layer: L.Layer;
+      text: string;
     }) => void;
 
     /**
