@@ -484,7 +484,7 @@ const Toolbar = L.Class.extend({
       instance
     );
 
-    const btn = this.buttons[instance]._button;
+    const btn = this.buttons[instance]?._button || {};
     options = { ...btn, ...options };
     const control = this.createCustomControl(options);
     return { drawInstance, control };

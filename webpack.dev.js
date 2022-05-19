@@ -8,7 +8,8 @@ module.exports = {
   watch: true,
   devtool: 'eval-cheap-source-map',
   mode: 'development',
-  entry: ['./src/js/L.PM.js'],
+  // entry: ['./src/js/L.PM.js'],
+  entry: ['./src/js/index.js'],
   output: {
     filename: 'leaflet-geoman.min.js',
     path: path.resolve(__dirname, 'dist'),
