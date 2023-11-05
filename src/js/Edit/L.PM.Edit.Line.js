@@ -148,6 +148,9 @@ Edit.Line = Edit.extend({
     this._markerGroup = new L.FeatureGroup();
     this._markerGroup._pmTempLayer = true;
 
+    // if(this._layer.feature?.properties?.handlers?.extend) {
+    //   this._allowedLatLngs = this._layer.feature?.properties?.handlers?.extend.map((latlng) => L.GeoJSON.coordsToLatLng(latlng));
+    // }
     // handle coord-rings (outer, inner, etc)
     const handleRing = (coordsArr) => {
       // if there is another coords ring, go a level deep and do this again
@@ -155,15 +158,18 @@ Edit.Line = Edit.extend({
         return coordsArr.map(handleRing, this);
       }
 
+      let coordsArrFilter = coordsArr;
+        // coordsArrFilter = coordsArr.filter((abc)=>!!allowedLatLngs.find((latlng)=>latlng.equals(abc)));
+
       // the marker array, it includes only the markers of vertexes (no middle markers)
-      const ringArr = coordsArr.map(this._createMarker, this);
+      const ringArr = coordsArrFilter.map(this._createMarker, this);
 
       if (this.options.hideMiddleMarkers !== true) {
         // create small markers in the middle of the regular markers
-        coordsArr.map((v, k) => {
+        coordsArrFilter.map((v, k) => {
           // find the next index fist
           const nextIndex = this.isPolygon()
-            ? (k + 1) % coordsArr.length
+            ? (k + 1) % coordsArrFilter.length
             : k + 1;
           // create the marker
           return this._createMiddleMarker(ringArr[k], ringArr[nextIndex]);
@@ -185,13 +191,26 @@ Edit.Line = Edit.extend({
 
   // creates initial markers for coordinates
   _createMarker(latlng) {
+    let active = false;
+
+    const markerLatLngSettings = this._layer._allowedLatLngs && this._layer._allowedLatLngs.find((allowedLatLng)=>allowedLatLng.latlng.equals(latlng));
+
+    if(!this._layer._allowedLatLngs || markerLatLngSettings) {
+      active = true;
+    }
+
     const marker = new L.Marker(latlng, {
-      draggable: true,
-      icon: L.divIcon({ className: 'marker-icon' }),
+      draggable: active,
+      icon: L.divIcon({ className: `marker-icon ${active ? '' : 'marker-hidden'}` }),
     });
     this._setPane(marker, 'vertexPane');
 
     marker._pmTempLayer = true;
+    marker._initLatLng = latlng;
+
+    if(markerLatLngSettings && markerLatLngSettings.directionForced){
+      marker.directionForced = true;
+    }
 
     if (this.options.rotate) {
       marker.on('dragstart', this._onRotateStart, this);
@@ -674,6 +693,8 @@ Edit.Line = Edit.extend({
       );
     }
 
+    this._markerBeforeCoords = marker.getLatLng();
+
     if (
       !this.options.allowSelfIntersection &&
       this.options.allowSelfIntersectionEdit &&
@@ -716,7 +737,7 @@ Edit.Line = Edit.extend({
       return;
     }
 
-    this.updatePolygonCoordsFromMarkerDrag(marker);
+
 
     // the dragged markers neighbors
     const markerArr =
@@ -728,11 +749,28 @@ Edit.Line = Edit.extend({
 
     // update middle markers on the left and right
     // be aware that "next" and "prev" might be interchanged, depending on the geojson array
-    const markerLatLng = marker.getLatLng();
+    let markerLatLng = marker.getLatLng();
 
     // get latlng of prev and next marker
     const prevMarkerLatLng = markerArr[prevMarkerIndex].getLatLng();
     const nextMarkerLatLng = markerArr[nextMarkerIndex].getLatLng();
+
+    if(marker.directionForced) {
+      let angleDeg = L.GeometryUtil.angle(this._map, prevMarkerLatLng, this._markerBeforeCoords),
+        dest = L.GeometryUtil.destination(prevMarkerLatLng, angleDeg, this._map.distance(prevMarkerLatLng, markerLatLng));
+
+      markerLatLng = L.GeometryUtil.closestOnSegment(this._map, markerLatLng, prevMarkerLatLng, dest);
+
+      if (this._map.distance(prevMarkerLatLng, markerLatLng) < 1) {
+        markerLatLng = marker._latlngLastPos || marker.getLatLng();
+      }
+      // const dest = L.GeometryUtil.destinationOnSegment(this._map, prevMarkerLatLng, this._markerBeforeCoords, this._map.distance(prevMarkerLatLng, markerLatLng));
+    }
+    marker._latlng = markerLatLng;
+    marker._latlngLastPos = markerLatLng;
+    marker.update();
+
+    this.updatePolygonCoordsFromMarkerDrag(marker);
 
     if (marker._middleMarkerNext) {
       const middleMarkerNextLatLng = L.PM.Utils.calcMiddleLatLng(

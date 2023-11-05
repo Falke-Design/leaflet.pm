@@ -42,6 +42,9 @@ import Matrix from './helpers/Matrix';
 
 import Utils from './L.PM.Utils';
 
+import './Draw/TacticalSymbol';
+
+
 L.PM = L.PM || {
   version: packageInfo.version,
   Map,

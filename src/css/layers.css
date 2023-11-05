@@ -89,3 +89,13 @@
 .pm-textarea.pm-hasfocus {
   cursor: auto;
 }
+
+.marker-icon.marker-hidden{
+  opacity: 0;
+  pointer-events: none;
+  display: none;
+}
+
+.marker-icon.rotate-marker-icon{
+  background-color: #f7ffae;
+}
