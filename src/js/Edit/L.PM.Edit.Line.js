@@ -207,6 +207,7 @@ Edit.Line = Edit.extend({
 
     marker._pmTempLayer = true;
     marker._initLatLng = latlng;
+    marker._parentPMLayer = this;
 
     if(markerLatLngSettings && markerLatLngSettings.directionForced){
       marker.directionForced = true;

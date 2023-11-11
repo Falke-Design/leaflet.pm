@@ -11,6 +11,22 @@ L.TacticalSymbol = L.Layer.extend({
 
   initialize(path) {
     this._layerGroup = L.featureGroup();
+    this._visibleLayersInEditMode = [];
+
+    const pmEnable = ()=>{
+      this._visibleLayersInEditMode.forEach((layer)=>{
+        layer.addTo(this._layerGroup);
+      })
+    };
+    const pmDisable = ()=>{
+      this._visibleLayersInEditMode.forEach((layer)=>{
+        layer.removeFrom(this._layerGroup);
+      })
+    };
+
+    this._layerGroup.on('pm:enable', pmEnable, this);
+    this._layerGroup.on('pm:disable', pmDisable, this);
+
     // this._layerGroup.off('layeradd');
     this._symbolPath = path;
 
@@ -20,10 +36,12 @@ L.TacticalSymbol = L.Layer.extend({
 
     this._scale = 1;
 
-
+    this._hideHandlers = false;
+    this._hideMarkersExceptHandlerIds = new Set();
   },
 
   createLayerFromPaths(symbolPath){
+    this._tempHandlerId = 0;
     symbolPath.paths.forEach((path)=>{
       this.goTroughPath(path, this._pxCenter, 0);
     })
@@ -43,7 +61,7 @@ L.TacticalSymbol = L.Layer.extend({
       if(disabled){
         layer.options.pmIgnore = true;
       }
-      layer.pm.setOptions(this.geomanOptions)
+      layer.pm.setOptions(this.geomanOptions);
       layer.addTo(this._layerGroup);
 
       if(!this._masterLayer){
@@ -65,26 +83,26 @@ L.TacticalSymbol = L.Layer.extend({
         icon: L.divIcon({ className: `marker-icon rotate-marker-icon` }),
       });
 
-      layer._extraEvents = [];
+      this._tempHandlerId += 1;
+      const handlerId = this._tempHandlerId;
+      layer._handlerId = handlerId;
 
-      const pmEnable = ()=>{
-        layer.addTo(this._layerGroup);
-      };
-      const pmDisable = ()=>{
-        layer.removeFrom(this._layerGroup);
-      };
-
-      layer._extraEvents.push(pmEnable, pmDisable);
-
-      this._layerGroup.on('pm:enable', pmEnable, this);
-      this._layerGroup.on('pm:disable', pmDisable, this);
+      if(!this._hideHandlers || this._hideMarkersExceptHandlerIds.has(handlerId)) {
+        this._visibleLayersInEditMode.push(layer);
+      }
 
       layer.on('dragstart', ()=>{
         this._tempHandler = layer;
+
+        this._hideHandlers = true;
+        this._hideMarkersExceptHandlerIds.add(layer._handlerId);
+
         this._tempScale = this._scale;
         this._map.on('mousemove', this._onHandlerMousemove, this);
         this._map.once('mouseup', ()=>{
           this._map.off('mousemove', this._onHandlerMousemove, this);
+          this._hideMarkersExceptHandlerIds.delete(layer._handlerId);
+          this._hideHandlers = false;
           delete this._tempHandler;
           delete this._tempScale;
           document.body.classList.remove('leaflet-dragging');
@@ -108,7 +126,6 @@ L.TacticalSymbol = L.Layer.extend({
     layer._depth = depth;
     layer._angle = angle;
     layer._angleBase = _angle || 0;
-
     if(path.edit){
       // if(path.edit.last){
       //   layer._allowedLatLngs.push(latlng)
@@ -120,18 +137,20 @@ L.TacticalSymbol = L.Layer.extend({
       //   })
       // }
 
-      if(path.edit.last){
-        layer._allowedLatLngs.push({
-          latlng,
-          directionForced: !Array.isArray(layer._symbolPath.edit.last) || layer._symbolPath.edit.last.indexOf('rotate') === -1
-        })
-      } else if(path.edit.first){
-        layer._allowedLatLngs.push({
-          latlng: cursorLatLng,
-          anchor: latlng,
-          first: true,
-          directionForced: !Array.isArray(layer._symbolPath.edit.first) || layer._symbolPath.edit.first.indexOf('rotate') === -1
-        });
+      if(!this._hideHandlers) {
+        if (path.edit.last) {
+          layer._allowedLatLngs.push({
+            latlng,
+            directionForced: !Array.isArray(layer._symbolPath.edit.last) || layer._symbolPath.edit.last.indexOf('rotate') === -1
+          })
+        } else if (path.edit.first) {
+          layer._allowedLatLngs.push({
+            latlng: cursorLatLng,
+            anchor: latlng,
+            first: true,
+            directionForced: !Array.isArray(layer._symbolPath.edit.first) || layer._symbolPath.edit.first.indexOf('rotate') === -1
+          });
+        }
       }
     }
 
@@ -177,12 +196,22 @@ L.TacticalSymbol = L.Layer.extend({
       layer.on('pm:markerdragstart', (e)=>{
         const marker = e.markerEvent.target;
 
+        const id = L.Util.stamp(marker);
+        delete marker._parentPMLayer?._markerGroup?._layers[id];
+
         const markers = this._map.getContainer().querySelectorAll('.marker-icon:not(.marker-hidden)');
 
         markers.forEach((m)=>{
           m !== marker._icon && m.classList.add('marker-hidden');
         })
 
+        this._hideHandlers = true;
+
+      });
+      layer.on('pm:markerdragend', (e)=>{
+        const marker = e.markerEvent.target;
+        this._map.removeLayer(marker);
+        this._hideHandlers = false;
       });
       layer.on('pm:markerdrag', (e)=>{
         const marker = e.markerEvent.target;
@@ -206,46 +235,12 @@ L.TacticalSymbol = L.Layer.extend({
 
         layer._symbolPath.pxLength = pxLength / this._scale;
 
-        if(layer.childs){
-          this._removeChildren(layer);
-          layer.childs = [];
-          let point;
-          if(Array.isArray(layer._symbolPath.edit.last) && layer._symbolPath.edit.last.indexOf('rotate') > -1) {
-            point = pointMarker;
-            layer._symbolPath.angle = layer._angleBase + this.angle(layer._cursor, point);
-            // layer._angle = this.angle(layer._cursor, point);
-          }else{
-            point = this.destination(layer._cursor, layer._angle, layer._symbolPath.pxLength * this._scale);
-          }
 
-
-          layer._symbolPath.paths.forEach((subpath)=>{
-            if(!layer.childs) layer.childs = [];
-            layer.childs.push(this.goTroughPath(subpath, point, layer._depth+1, layer._angle, true, true))
-          })
-          this._layerGroup.pm.setOptions(this.geomanOptions)
+        if(Array.isArray(layer._symbolPath.edit.last) && layer._symbolPath.edit.last.indexOf('rotate') > -1) {
+          layer._symbolPath.angle = this.angle(layer._cursor, pointMarker) -layer._angleBase;
         }
-
-        if(layer.arrows){
-          layer.arrows.forEach((arrow)=>{
-            arrow.removeFrom && arrow.removeFrom(this._layerGroup);
-          });
-
-          if(layer._symbolPath.arrow.last){
-            this.createArrowForLayer(layer, 'front');
-          }
-          if(layer._symbolPath.arrow.first){
-            this.createArrowForLayer(layer, 'back');
-          }
-        }
-
-        if(layer._symbolPath.text) {
-          layer.textMarker.removeFrom(this._layerGroup);
-          this.createTextForLayer(layer, layer._symbolPath.text);
-        }
-
       });
-      layer.on('pm:edit', ()=>{
+      layer.on('pm:change', ()=>{
         this._render();
       })
       //
@@ -270,6 +265,7 @@ L.TacticalSymbol = L.Layer.extend({
   _render(){
     const enabled = this._layerGroup.pm.enabled();
     this._layerGroup.clearLayers();
+    this._visibleLayersInEditMode = [];
     this._layerGroup.pm.disable();
     this.createLayerFromPaths(this._symbolPath, this._layerGroup);
     this._layerGroup.pm.setOptions(this.geomanOptions);
@@ -297,14 +293,9 @@ L.TacticalSymbol = L.Layer.extend({
 
         l.textMarker && l.textMarker.removeFrom(this._layerGroup);
 
-        l._extraEvents && l._extraEvents.forEach((event)=>{
-          this._layerGroup.off('pm:enable', event, this);
-        })
-
         l.offsetLines && l.offsetLines.forEach((line)=>{
           line && line.removeFrom && line.removeFrom(this._layerGroup);
         });
-
 
         if(layer.childs){
           this._removeChildren(l);
@@ -393,7 +384,6 @@ L.TacticalSymbol = L.Layer.extend({
   _onHandlerMousemove(e){
     document.body.classList.add('leaflet-dragging');
     const point = this._map.project(e.latlng, this._zoom);
-    this._removeChildren({ childs: this._layerGroup.getLayers() });
 
     let angle = null;
     if(this._tempHandler.rotate) {
@@ -406,91 +396,46 @@ L.TacticalSymbol = L.Layer.extend({
       // calculate the point without scaled length and scaled cursor
       const pointOrigin = this.destination(this._pxCenter, this._tempHandler._angle, this._tempHandler._symbolPath.pxLength);
       const distanceOrigin = this.distance(this._pxCenter, pointOrigin);
-
-      const scale = distanceNew / distanceOrigin;
-
-      this._scale = scale;
+      this._scale = distanceNew / distanceOrigin;
     }
 
     this._symbolPath.paths.forEach((path)=>{
       if(angle !== null) {
         path.angle = angle;
       }
-      this.goTroughPath(path, this._pxCenter, 0, 0, true, false);
-    })
+    });
+
+    this._render()
   },
   createOffsetLines(layers, opposite){
     if(!layers || layers.length === 0){
       return;
     }
+    const ring = [];
+    layers.forEach((obj)=>{
+      obj.layer.getLatLngs().forEach((ll)=>{
+          ring.push(this._map.project(ll, this._zoom));
+      });
 
-    const line = L.polyline(layers[0].layer.getLatLngs(), {
+      obj.layer.setStyle({fill: false, stroke: false});
+      obj.layer.on('pm:enable', ()=>{
+        obj.layer.setStyle({fill: true, stroke: true, dashArray: [0,5]});
+      });
+      obj.layer.on('pm:disable', ()=>{
+        obj.layer.setStyle({fill: false, stroke: false});
+      });
+
+    });
+
+    const ringOffset = L.PolylineOffset.offsetPoints(ring, {
       offset: layers[0].offset * (opposite ? -1 : 1),
       fill: false, stroke: false,
       pmIgnore: true,
       color: 'red'
-    }).addTo(this._map);
-
-    layers.forEach((obj)=>{
-      obj.layer.getLatLngs().forEach((ll, idx)=>{
-        // skip first entry, because the previous layer shares the same latlng
-        if(idx > 0){
-          line.addLatLng(ll);
-        }
-      });
-      obj.layer.setStyle({fill: false, stroke: false});
-      obj.layer.on('pm:enable', ()=>{
-        obj.layer.setStyle({fill: false, stroke: true});
-      });
-      obj.layer.on('pm:disable', ()=>{
-        obj.layer.setStyle({fill: false, stroke: false});
-      });
     });
-
-    const ring =  line._rings[0];
 
     const offsetLatLngs = [];
-    ring.forEach((xy)=>{
-      offsetLatLngs.push(this._map.layerPointToLatLng(L.point(xy.x, xy.y)));
-    });
-
-    line.removeFrom(this._map);
-
-    const offsetLayer = L.polyline(offsetLatLngs, {pmIgnore: true}).addTo(this._layerGroup);
-    return offsetLayer;
-  },
-  createOffsetLines2(layers, opposite){
-    if(!layers || layers.length === 0){
-      return;
-    }
-    const segmente = [];
-    layers.forEach((obj)=>{
-      const ring = [];
-      obj.layer.getLatLngs().forEach((ll)=>{
-        ring.push(this._map.project(ll, this._zoom));
-      });
-
-      segmente.push(...L.PolylineOffset.offsetPointLine(L.LineUtil.simplify(ring, 1), obj.offset * (opposite ? -1 :1), this._map));
-      obj.layer.setStyle({fill: false, stroke: false});
-      obj.layer.on('pm:enable', ()=>{
-        obj.layer.setStyle({fill: true, stroke: true});
-      });
-      obj.layer.on('pm:disable', ()=>{
-        obj.layer.setStyle({fill: false, stroke: false});
-      });
-
-    });
-
-    const ringPts = L.PolylineOffset.joinLineSegments(segmente, layers[0].offset);
-
-    // const segmentePts = [];
-    // segmentePts.push(...L.PolylineOffset.offsetPointLine(L.LineUtil.simplify(ringPts, 1), 0, this._map));
-    // const ring = L.PolylineOffset.joinLineSegments(segmentePts, 0);
-
-    const ring = ringPts;
-
-    const offsetLatLngs = [];
-    ring.forEach((xy)=>{
+    ringOffset.forEach((xy)=>{
       offsetLatLngs.push(this._map.unproject(L.point(xy.x, xy.y), this._zoom));
     });
 

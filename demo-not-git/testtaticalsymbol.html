@@ -4,14 +4,25 @@
     <meta charset="UTF-8" />
     <title>Title</title>
     <link rel="stylesheet" href="../dist/leaflet-geoman.css" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<!--    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>-->
+<!--    <link-->
+<!--      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"-->
+<!--      rel="stylesheet"-->
+<!--    />-->
+    <script src="./libs/leaflet.js"></script>
     <link
-      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-      rel="stylesheet"
+            href="./libs/leaflet.css"
+            rel="stylesheet"
     />
-    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-geometryutil@0.10.2/src/leaflet.geometryutil.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
+<!--    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/leaflet-geometryutil@0.10.2/src/leaflet.geometryutil.min.js"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/leaflet-geometryutil@0.10.2/src/leaflet.geometryutil.min.js"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>-->
+
+    <script src="./libs/turf.js"></script>
+    <script src="./libs/polydeco.js"></script>
+    <script src="./libs/geometryutil.js"></script>
     <script src="./polyline-offset.js"></script>
     <script src="../dist/leaflet-geoman.min.js"></script>
     <style>
@@ -34,11 +45,11 @@
         preferCanvas: false,
         maxZoom: 22,
       }).setView([ 47.37359340461117, 9.805641174316408], 15);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution:
-          '&copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 22,
-      }).addTo(map);
+      // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      //   attribution:
+      //     '&copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      //   maxZoom: 22,
+      // }).addTo(map);
 
       map.pm.addControls();
 
@@ -193,6 +204,10 @@ const offsetPx = 25;
                     angle: 45,
                     pxLength: 55,
                     offset: offsetPx,
+                    edit: {
+                      // last: true
+                      last: ['move','rotate']
+                    },
                     paths: [
                       {
                         type: 'Space',
