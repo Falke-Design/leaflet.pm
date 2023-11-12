@@ -1,5 +1,132 @@
 
-const ambush = null;
+const ambush = {
+  paths: [
+    {
+      type: 'Space',
+      angle: 0,
+      pxLength: 50,
+      paths: [
+        {
+          type: 'LineString',
+          angle: 0,
+          pxLength: 200,
+          paths: [
+            {
+              type: 'LineString',
+              angle: 135,
+              pxLength: 30,
+              paths: []
+            },
+            {
+              type: 'LineString',
+              angle: -135,
+              pxLength: 30,
+              paths: []
+            },
+          ]
+        },
+        {
+          type: 'LineString',
+          angle: 90,
+          pxLength: 50,
+          paths: [
+            {
+              type: 'LineString',
+              angle: 90,
+              pxLength: 100,
+              paths: []
+            },
+            {
+              type: 'LineString',
+              angle: 10,
+              pxLength: 80,
+              paths: [
+                {
+                  type: 'LineString',
+                  angle: 80,
+                  pxLength: 100,
+                  paths: []
+                },
+                {
+                  type: 'LineString',
+                  angle: 10,
+                  pxLength: 80,
+                  paths: [
+                    {
+                      type: 'LineString',
+                      angle: 70,
+                      pxLength: 100,
+                      paths: []
+                    },
+                    {
+                      type: 'LineString',
+                      angle: 10,
+                      pxLength: 80,
+                      paths: [
+                      ]
+                    },
+                  ]
+                },
+              ]
+            },
+          ]
+        },
+        {
+          type: 'LineString',
+          angle: -90,
+          pxLength: 50,
+          paths: [
+            {
+              type: 'LineString',
+              angle: -90,
+              pxLength: 100,
+              paths: []
+            },
+            {
+              type: 'LineString',
+              angle: -10,
+              pxLength: 80,
+              paths: [
+                {
+                  type: 'LineString',
+                  angle: -80,
+                  pxLength: 100,
+                  paths: []
+                },
+                {
+                  type: 'LineString',
+                  angle: -10,
+                  pxLength: 80,
+                  paths: [
+                    {
+                      type: 'LineString',
+                      angle: -70,
+                      pxLength: 100,
+                      paths: []
+                    },
+                    {
+                      type: 'LineString',
+                      angle: -10,
+                      pxLength: 80,
+                      paths: []
+                    },
+                  ]
+                },
+              ]
+            }
+          ]
+        },
+      ]
+    },
+    {
+      type: 'HandlerPoint',
+      rotate: true,
+      scale: true,
+      angle: 0,
+      pxLength: 50,
+    }
+  ]
+};
 
 const block = {
   paths: [
@@ -399,7 +526,202 @@ const clear = {
   ]
 };
 
-const contain = null;
+const contain =  {
+  paths: [
+    {
+      type: 'LineString',
+      angle: 0,
+      pxLength: 50,
+      paths: [
+        {
+          type: 'Space',
+          angle: 0,
+          pxLength: 70,
+          text: 'ENY',
+          paths: [
+            {
+              type: 'LineString',
+              angle: 0,
+              pxLength: 50,
+              paths: [
+                {
+                  type: 'LineString',
+                  angle: -135,
+                  pxLength: 30,
+                  paths: []
+                },
+                {
+                  type: 'LineString',
+                  angle: 135,
+                  pxLength: 30,
+                  paths: []
+                },
+                {
+                  type: 'Space',
+                  angle: 0,
+                  pxLength: 100,
+                  paths: [
+                    {
+                      type: 'Space',
+                      angle: 0,
+                      text: 'C',
+                      pxLength: 50,
+                      paths: [
+                        {
+                          type: 'LineString',
+                          angle: 90,
+                          pxLength: 50,
+                          paths: [
+                            {
+                              type: 'LineString',
+                              angle: 90,
+                              pxLength: 50,
+                              paths: [
+                              ]
+                            },
+                            {
+                              type: 'LineString',
+                              angle: 22.5,
+                              pxLength: 50,
+                              paths: [
+                                {
+                                  type: 'LineString',
+                                  angle: 90,
+                                  pxLength: 50,
+                                  paths: []
+                                },
+                                {
+                                  type: 'LineString',
+                                  angle: 22.5,
+                                  pxLength: 50,
+                                  paths: [
+                                    {
+                                      type: 'LineString',
+                                      angle: 90,
+                                      pxLength: 50,
+                                      paths: []
+                                    },
+                                    {
+                                      type: 'LineString',
+                                      angle: 22.5,
+                                      pxLength: 50,
+                                      paths: [
+                                        {
+                                          type: 'LineString',
+                                          angle: 90,
+                                          pxLength: 50,
+                                          paths: []
+                                        },
+
+                                        {
+                                          type: 'LineString',
+                                          angle: 22.5,
+                                          pxLength: 50,
+                                          paths: [
+                                            {
+                                              type: 'LineString',
+                                              angle: 90,
+                                              pxLength: 50,
+                                              paths: []
+                                            },
+                                          ]
+                                        },
+                                      ]
+                                    },
+                                  ]
+                                },
+                              ]
+                            },
+                          ]
+                        },
+
+
+                        {
+                          type: 'LineString',
+                          angle: -90,
+                          pxLength: 50,
+                          paths: [
+                            {
+                              type: 'LineString',
+                              angle: -90,
+                              pxLength: 50,
+                              paths: [
+                              ]
+                            },
+                            {
+                              type: 'LineString',
+                              angle: -22.5,
+                              pxLength: 50,
+                              paths: [
+                                {
+                                  type: 'LineString',
+                                  angle: -90,
+                                  pxLength: 50,
+                                  paths: []
+                                },
+                                {
+                                  type: 'LineString',
+                                  angle: -22.5,
+                                  pxLength: 50,
+                                  paths: [
+                                    {
+                                      type: 'LineString',
+                                      angle: -90,
+                                      pxLength: 50,
+                                      paths: []
+                                    },
+                                    {
+                                      type: 'LineString',
+                                      angle: -22.5,
+                                      pxLength: 50,
+                                      paths: [
+                                        {
+                                          type: 'LineString',
+                                          angle: -90,
+                                          pxLength: 50,
+                                          paths: []
+                                        },
+                                        {
+                                          type: 'LineString',
+                                          angle: -22.5,
+                                          pxLength: 50,
+                                          paths: [
+                                            {
+                                              type: 'LineString',
+                                              angle: -90,
+                                              pxLength: 50,
+                                              paths: []
+                                            },
+
+                                          ]
+                                        },
+                                      ]
+                                    },
+                                  ]
+                                },
+                              ]
+                            },
+                          ]
+                        },
+                      ]
+                    },
+                  ]
+                },
+              ]
+            },
+          ]
+        },
+      ]
+    },
+    {
+      type: 'HandlerPoint',
+      rotate: true,
+      scale: true,
+      angle: 90,
+      pxLength: 50,
+    }
+  ]
+};
 
 const counterAttack = {
   paths: [
@@ -729,7 +1051,121 @@ const cover = {
   ]
 };
 
-const delay = null;
+const delay = {
+  paths: [
+    {
+      type: 'LineString',
+      angle: 0,
+      pxLength: 50,
+      paths: [
+        {
+          type: 'LineString',
+          angle: 22.5,
+          pxLength: 30,
+          paths: [
+            {
+              type: 'LineString',
+              angle: 22.5,
+              pxLength: 30,
+              paths: [
+                {
+                  type: 'LineString',
+                  angle: 22.5,
+                  pxLength: 30,
+                  paths: [
+                    {
+                      type: 'LineString',
+                      angle: 22.5,
+                      pxLength: 30,
+                      paths: [
+                        {
+                          type: 'LineString',
+                          angle: 0,
+                          pxLength: 200,
+                          paths: [
+                            {
+                              type: 'LineString',
+                              angle: 22.5,
+                              pxLength: 30,
+                              paths: [
+                                {
+                                  type: 'LineString',
+                                  angle: 22.5,
+                                  pxLength: 30,
+                                  paths: [
+                                    {
+                                      type: 'LineString',
+                                      angle: 22.5,
+                                      pxLength: 30,
+                                      paths: [
+                                        {
+                                          type: 'LineString',
+                                          angle: 22.5,
+                                          pxLength: 30,
+                                          paths: [
+                                            {
+                                              type: 'LineString',
+                                              angle: 0,
+                                              pxLength: 70,
+                                              paths: [
+                                                {
+                                                  type: 'Space',
+                                                  angle: 0,
+                                                  text: 'D',
+                                                  pxLength: 50,
+                                                  paths: [
+                                                    {
+                                                      type: 'LineString',
+                                                      angle: 0,
+                                                      pxLength: 70,
+                                                      paths: [
+                                                        {
+                                                          type: 'LineString',
+                                                          angle: -135,
+                                                          pxLength: 30,
+                                                          paths: []
+                                                        },
+                                                        {
+                                                          type: 'LineString',
+                                                          angle: 135,
+                                                          pxLength: 30,
+                                                          paths: []
+                                                        },
+                                                      ]
+                                                    },
+                                                  ]
+                                                },
+                                              ]
+                                            },
+                                          ]
+                                        },
+                                      ]
+                                    },
+                                  ]
+                                },
+                              ]
+                            },
+                          ]
+                        },
+                      ]
+                    },
+                  ]
+                },
+              ]
+            },
+          ]
+        },
+      ]
+    },
+    {
+      type: 'HandlerPoint',
+      rotate: true,
+      scale: true,
+      angle: 90,
+      pxLength: 170,
+    }
+  ]
+};
 
 const destroy = {
   paths: [
@@ -1402,7 +1838,120 @@ const penetrate = {
   ]
 };
 
-const reliefInPlace = null;
+const reliefInPlace = {
+  paths: [
+    {
+      type: 'LineString',
+      angle: 45,
+      pxLength: 30,
+      paths: []
+    },
+    {
+      type: 'LineString',
+      angle: -45,
+      pxLength: 30,
+      paths: []
+    },
+    {
+      type: 'LineString',
+      angle: 0,
+      pxLength: 200,
+      paths: [
+        {
+          type: 'LineString',
+          angle: 22.5,
+          pxLength: 30,
+          paths: [
+            {
+              type: 'LineString',
+              angle: 22.5,
+              pxLength: 30,
+              paths: [
+                {
+                  type: 'LineString',
+                  angle: 22.5,
+                  pxLength: 30,
+                  paths: [
+                    {
+                      type: 'LineString',
+                      angle: 22.5,
+                      pxLength: 30,
+                      paths: [
+                        {
+                          type: 'LineString',
+                          angle: 0,
+                          pxLength: 200,
+                          paths: [
+                            {
+                              type: 'LineString',
+                              angle: 22.5,
+                              pxLength: 30,
+                              paths: [
+                                {
+                                  type: 'LineString',
+                                  angle: 22.5,
+                                  pxLength: 30,
+                                  paths: [
+                                    {
+                                      type: 'LineString',
+                                      angle: 22.5,
+                                      pxLength: 30,
+                                      paths: [
+                                        {
+                                          type: 'LineString',
+                                          angle: 22.5,
+                                          pxLength: 1,
+                                          paths: [
+                                            {
+                                              type: 'LineString',
+                                              angle: -45,
+                                              pxLength: 30,
+                                              paths: [
+                                              ]
+                                            },
+                                            {
+                                              type: 'LineString',
+                                              angle: 45,
+                                              pxLength: 30,
+                                              paths: [
+                                              ]
+                                            },
+                                            {
+                                              type: 'LineString',
+                                              angle: 0,
+                                              pxLength: 200,
+                                              paths: [
+                                              ]
+                                            },
+                                          ]
+                                        },
+                                      ]
+                                    },
+                                  ]
+                                },
+                              ]
+                            },
+                          ]
+                        },
+                      ]
+                    },
+                  ]
+                },
+              ]
+            },
+          ]
+        },
+      ]
+    },
+    {
+      type: 'HandlerPoint',
+      rotate: true,
+      scale: true,
+      angle: 90,
+      pxLength: 170,
+    }
+  ]
+};
 
 const retain = null;
 
@@ -1526,9 +2075,238 @@ const secure = null;
 
 const seize = null;
 
-const withdraw = null;
+const withdraw = {
+  paths: [
+    {
+      type: 'LineString',
+      angle: 0,
+      pxLength: 50,
+      paths: [
+        {
+          type: 'LineString',
+          angle: 22.5,
+          pxLength: 30,
+          paths: [
+            {
+              type: 'LineString',
+              angle: 22.5,
+              pxLength: 30,
+              paths: [
+                {
+                  type: 'LineString',
+                  angle: 22.5,
+                  pxLength: 30,
+                  paths: [
+                    {
+                      type: 'LineString',
+                      angle: 22.5,
+                      pxLength: 30,
+                      paths: [
+                        {
+                          type: 'LineString',
+                          angle: 0,
+                          pxLength: 200,
+                          paths: [
+                            {
+                              type: 'LineString',
+                              angle: 22.5,
+                              pxLength: 30,
+                              paths: [
+                                {
+                                  type: 'LineString',
+                                  angle: 22.5,
+                                  pxLength: 30,
+                                  paths: [
+                                    {
+                                      type: 'LineString',
+                                      angle: 22.5,
+                                      pxLength: 30,
+                                      paths: [
+                                        {
+                                          type: 'LineString',
+                                          angle: 22.5,
+                                          pxLength: 30,
+                                          paths: [
+                                            {
+                                              type: 'LineString',
+                                              angle: 0,
+                                              pxLength: 70,
+                                              paths: [
+                                                {
+                                                  type: 'Space',
+                                                  angle: 0,
+                                                  text: 'W',
+                                                  pxLength: 50,
+                                                  paths: [
+                                                    {
+                                                      type: 'LineString',
+                                                      angle: 0,
+                                                      pxLength: 70,
+                                                      paths: [
+                                                        {
+                                                          type: 'LineString',
+                                                          angle: -135,
+                                                          pxLength: 30,
+                                                          paths: []
+                                                        },
+                                                        {
+                                                          type: 'LineString',
+                                                          angle: 135,
+                                                          pxLength: 30,
+                                                          paths: []
+                                                        },
+                                                      ]
+                                                    },
+                                                  ]
+                                                },
+                                              ]
+                                            },
+                                          ]
+                                        },
+                                      ]
+                                    },
+                                  ]
+                                },
+                              ]
+                            },
+                          ]
+                        },
+                      ]
+                    },
+                  ]
+                },
+              ]
+            },
+          ]
+        },
+      ]
+    },
+    {
+      type: 'HandlerPoint',
+      rotate: true,
+      scale: true,
+      angle: 90,
+      pxLength: 170,
+    }
+  ]
+};
 
-const withdrawUnderPressure = null;
+const withdrawUnderPressure = {
+  paths: [
+    {
+      type: 'LineString',
+      angle: 0,
+      pxLength: 50,
+      paths: [
+        {
+          type: 'LineString',
+          angle: 22.5,
+          pxLength: 30,
+          paths: [
+            {
+              type: 'LineString',
+              angle: 22.5,
+              pxLength: 30,
+              paths: [
+                {
+                  type: 'LineString',
+                  angle: 22.5,
+                  pxLength: 30,
+                  paths: [
+                    {
+                      type: 'LineString',
+                      angle: 22.5,
+                      pxLength: 30,
+                      paths: [
+                        {
+                          type: 'LineString',
+                          angle: 0,
+                          pxLength: 200,
+                          paths: [
+                            {
+                              type: 'LineString',
+                              angle: 22.5,
+                              pxLength: 30,
+                              paths: [
+                                {
+                                  type: 'LineString',
+                                  angle: 22.5,
+                                  pxLength: 30,
+                                  paths: [
+                                    {
+                                      type: 'LineString',
+                                      angle: 22.5,
+                                      pxLength: 30,
+                                      paths: [
+                                        {
+                                          type: 'LineString',
+                                          angle: 22.5,
+                                          pxLength: 30,
+                                          paths: [
+                                            {
+                                              type: 'LineString',
+                                              angle: 0,
+                                              pxLength: 70,
+                                              paths: [
+                                                {
+                                                  type: 'Space',
+                                                  angle: 0,
+                                                  text: 'WP',
+                                                  pxLength: 50,
+                                                  paths: [
+                                                    {
+                                                      type: 'LineString',
+                                                      angle: 0,
+                                                      pxLength: 70,
+                                                      paths: [
+                                                        {
+                                                          type: 'LineString',
+                                                          angle: -135,
+                                                          pxLength: 30,
+                                                          paths: []
+                                                        },
+                                                        {
+                                                          type: 'LineString',
+                                                          angle: 135,
+                                                          pxLength: 30,
+                                                          paths: []
+                                                        },
+                                                      ]
+                                                    },
+                                                  ]
+                                                },
+                                              ]
+                                            },
+                                          ]
+                                        },
+                                      ]
+                                    },
+                                  ]
+                                },
+                              ]
+                            },
+                          ]
+                        },
+                      ]
+                    },
+                  ]
+                },
+              ]
+            },
+          ]
+        },
+      ]
+    },
+    {
+      type: 'HandlerPoint',
+      rotate: true,
+      scale: true,
+      angle: 90,
+      pxLength: 170,
+    }
+  ]
+};
+
 
 
 const defaultx = {
