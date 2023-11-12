@@ -48,6 +48,12 @@ L.TacticalSymbol = L.Layer.extend({
   },
 
   goTroughPath(path, cursor, depth, _angle, disabled, ignoreScale, data = {}){
+    if(!path.angle){
+      path.angle = 0;
+    }
+    if(!path.pxLength){
+      path.pxLength = 0;
+    }
     const angle = (_angle ||0 ) + path.angle;
     const point = this.destination(cursor, angle, path.pxLength * this._scale);
     const latlng = this._map.unproject(point, this._zoom);
@@ -399,9 +405,12 @@ L.TacticalSymbol = L.Layer.extend({
       this._scale = distanceNew / distanceOrigin;
     }
 
+    const angleDiff = angle - this._tempHandler._angle;
+    this._tempHandler._angle = angle;
+
     this._symbolPath.paths.forEach((path)=>{
       if(angle !== null) {
-        path.angle = angle;
+        path.angle += angleDiff;
       }
     });
 

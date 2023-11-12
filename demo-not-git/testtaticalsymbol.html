@@ -25,6 +25,7 @@
     <script src="./libs/geometryutil.js"></script>
     <script src="./polyline-offset.js"></script>
     <script src="../dist/leaflet-geoman.min.js"></script>
+    <script src="./tacticalsymbols.js"></script>
     <style>
 
       /* marker & overlays interactivity */
@@ -53,216 +54,14 @@
 
       map.pm.addControls();
 
-      let data = JSON.parse('{"type":"Feature","properties":{},"geometry":{"type":"LineString","coordinates":[[9.63972,47.329792],[9.642434,47.329763]]}}');
-      data = JSON.parse('{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"LineString","coordinates":[[9.63958,47.330555],[9.640471,47.330548]]}},{"type":"Feature","properties":{},"geometry":{"type":"LineString","coordinates":[[9.6412,47.330555],[9.642391,47.330541]]}},{"type":"Feature","properties":{},"geometry":{"type":"LineString","coordinates":[[9.642445,47.331232],[9.642434,47.329923]]}}]}');
-      data = JSON.parse('{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"LineString","coordinates":[[9.639353,47.33057],[9.640784,47.330542]]}},{"type":"Feature","properties":{},"geometry":{"type":"LineString","coordinates":[[9.6412,47.330555],[9.642439,47.33054]]}},{"type":"Feature","properties":{},"geometry":{"type":"LineString","coordinates":[[9.642444,47.331154],[9.642439,47.33054]]}},{"type":"Feature","properties":{},"geometry":{"type":"LineString","coordinates":[[9.642439,47.33054],[9.642413,47.330061]]}}]}');
-
-      // data = {
-      //   'type': 'FeatureCollection',
-      //   'features': [{
-      //     'type': 'Feature',
-      //     'properties': {
-      //       'handlers': {
-      //         'extend': [[9.639353, 47.33057]]
-      //       }
-      //     },
-      //     'geometry': { 'type': 'LineString', 'coordinates': [[9.639353, 47.33057], [9.640784, 47.330542]] },
-      //   }, {
-      //     'type': 'Feature',
-      //     'properties': {
-      //       'handlers': {
-      //         'extend': [[9.6412, 47.330555]]
-      //       }
-      //     },
-      //     'geometry': { 'type': 'LineString', 'coordinates': [[9.6412, 47.330555], [9.642439, 47.33054]] },
-      //   }, {
-      //     'type': 'Feature',
-      //     'properties': {
-      //       'handlers': {
-      //         'extend': [[9.642444, 47.331154]]
-      //       }
-      //     },
-      //     'geometry': { 'type': 'LineString', 'coordinates': [[9.642444, 47.331154], [9.642439, 47.33054]] },
-      //   }, {
-      //     'type': 'Feature',
-      //     'properties': {
-      //       'handlers': {
-      //         'extend': [[9.642413, 47.330061]]
-      //       }
-      //     },
-      //     'geometry': { 'type': 'LineString', 'coordinates': [[9.642439, 47.33054], [9.642413, 47.330061]] },
-      //   }],
-      // };
-      //
-      //
-      // let layer = L.geoJSON(data).addTo(map);
-      // layer.pm.setOptions({hideMiddleMarkers: true})
-
-
-      data = {
-        points: [
-          {
-            type: 'LineString',
-            startPoint: [9.640784, 47.330542],
-            angle: -180,
-            pxLength: 50
-          }
-        ]
-      }
-
-
-
-
-const symbolPath = {
-  // startPoint: [9.640784, 47.330542],
-  paths: [
-    {
-      type: 'LineString',
-      angle: 45,
-      pxLength: 50,
-      edit: {
-        first: true
-      },
-      paths: [
-        {
-          type: 'Space',
-          angle: 0,
-          pxLength: 30,
-          text: 'P',
-          edit: {
-            last: false
-          },
-          paths: [
-            {
-              type: 'LineString',
-              angle: 0,
-              pxLength: 50,
-              edit: {
-                last: true
-              },
-              arrow: {
-                first: false,
-                last: true,
-              },
-              paths: [
-                {
-                  type: 'LineString',
-                  angle: 90,
-                  pxLength: 70
-                },
-                {
-                  type: 'LineString',
-                  angle: -90,
-                  pxLength: 70,
-                  edit: {
-                    last: true
-                  }
-                },
-              ]
-            }
-          ]
-        },
-      ]
-    },
-    {
-      type: 'HandlerPoint',
-      rotate: true,
-      scale: true,
-      angle: 45,
-      pxLength: 100,
-    }
-  ]
-};
-
-
-const offsetPx = 25;
-
-      const counterAttackPath = {
-        // startPoint: [9.640784, 47.330542],
-        paths: [
-          {
-            type: 'LineString',
-            angle: -90,
-            pxLength: 105,
-            offset: offsetPx,
-            edit: {
-              last: ['move','rotate']
-            },
-            paths: [
-              {
-                type: 'LineString',
-                angle: 45,
-                pxLength: 65,
-                offset: offsetPx,
-                edit: {
-                  // last: true
-                  last: ['move','rotate']
-                },
-                paths: [
-                  {
-                    type: 'LineString',
-                    angle: 45,
-                    pxLength: 55,
-                    offset: offsetPx,
-                    edit: {
-                      // last: true
-                      last: ['move','rotate']
-                    },
-                    paths: [
-                      {
-                        type: 'Space',
-                        angle: -90,
-                        pxLength: 25,
-                        paths: [
-                          {
-                            type: 'LineString',
-                            angle: 0 ,
-                            pxLength: 45.7,
-                            paths: [
-                                    {
-                                type: 'LineString',
-                                angle: 135,
-                                pxLength: 100,
-                                paths: []
-                              },
-                            ]
-                          },
-                        ]
-                      },
-                      {
-                        type: 'Space',
-                        angle: 90,
-                        pxLength: 25,
-                        paths: [
-                          {
-                            type: 'LineString',
-                            angle: 0 ,
-                            pxLength: 45.7,
-                            paths: [
-                              {
-                                type: 'LineString',
-                                angle: -135,
-                                pxLength: 100,
-                                paths: []
-                              },
-                            ]
-                          },
-                        ]
-                      }
-                    ]
-                  },
-                ]
-              },
-            ]
-          },
-        ]
-      };
 
 window.fg = L.featureGroup()//.addTo(map);
 
 
 // new L.TacticalSymbol(symbolPath).addTo(map)
-new L.TacticalSymbol(counterAttackPath).addTo(map)
+
+
+new L.TacticalSymbol(screen).addTo(map)
 //
 //       L.polyline([[47.37359340461117, 9.805641174316408],[47.376644923060596, 9.805641174316408], [47.37798172313573, 9.807615280151369],
 //         [47.37798172313573, 9.809975624084474]]).addTo(map)
